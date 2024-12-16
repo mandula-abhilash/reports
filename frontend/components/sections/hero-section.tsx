@@ -50,7 +50,7 @@ export function HeroSection() {
             className="space-y-6"
           >
             <motion.div variants={fadeIn} className="inline-block">
-              <div className="inline-flex items-center rounded-full border px-6 py-2 text-sm font-medium bg-background/60 backdrop-blur-sm">
+              <div className="inline-flex items-center font-semibold shadow-md rounded-full border px-6 py-2 text-md bg-background/60 backdrop-blur-sm">
                 <span className="text-web-orange">Professional</span>
                 <div className="mx-2 h-4 w-[1px] bg-muted-foreground/20"></div>
                 <span className="text-havelock-blue">Reliable</span>
@@ -94,7 +94,7 @@ export function HeroSection() {
             <Link href="/register">
               <Button
                 size="lg"
-                className="bg-web-orange hover:bg-web-orange/90 text-white min-w-[200px] group"
+                className="bg-web-orange hover:bg-web-orange/90 font-semibold text-md text-white min-w-[200px] group"
               >
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -104,7 +104,7 @@ export function HeroSection() {
               <Button
                 variant="outline"
                 size="lg"
-                className="min-w-[200px] backdrop-blur-sm bg-background/60"
+                className="min-w-[200px] backdrop-blur-sm font-semibold text-md bg-background/60"
               >
                 Sign In
               </Button>

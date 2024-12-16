@@ -1,4 +1,5 @@
-import { ClipboardList, BarChart3, MapPin } from "lucide-react";
+import { BarChart3, ClipboardList, MapPin } from "lucide-react";
+
 import { MainLayout } from "@/components/layout/main-layout";
 import { HeroSection } from "@/components/sections/hero-section";
 
@@ -11,7 +12,7 @@ export default function Home() {
         {/* Features Section */}
         <section className="container px-4 md:px-6 py-24">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group relative overflow-hidden rounded-lg border bg-background/60 backdrop-blur-sm p-8 hover:border-havelock-blue transition-all duration-300">
+            <div className="group relative overflow-hidden rounded-lg border-2 bg-background/60 backdrop-blur-sm p-8 hover:border-havelock-blue transition-all duration-300 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-br from-havelock-blue/0 via-transparent to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
               <div className="relative">
                 <div className="mb-4 text-havelock-blue">
@@ -21,12 +22,13 @@ export default function Home() {
                   Easy Submission
                 </h3>
                 <p className="text-muted-foreground">
-                  Submit your site assessment requests quickly and easily through our intuitive interface.
+                  Submit your site assessment requests quickly and easily
+                  through our intuitive interface.
                 </p>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-lg border bg-background/60 backdrop-blur-sm p-8 hover:border-web-orange transition-all duration-300">
+            <div className="group relative overflow-hidden rounded-lg border-2 bg-background/60 backdrop-blur-sm p-8 hover:border-web-orange transition-all duration-300 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-br from-web-orange/0 via-transparent to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
               <div className="relative">
                 <div className="mb-4 text-web-orange">
@@ -36,12 +38,13 @@ export default function Home() {
                   Detailed Reports
                 </h3>
                 <p className="text-muted-foreground">
-                  Receive comprehensive reports with detailed analysis and recommendations.
+                  Receive comprehensive reports with detailed analysis and
+                  recommendations.
                 </p>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-lg border bg-background/60 backdrop-blur-sm p-8 hover:border-conifer transition-all duration-300">
+            <div className="group relative overflow-hidden rounded-lg border-2 bg-background/60 backdrop-blur-sm p-8 hover:border-conifer transition-all duration-300 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-br from-conifer/0 via-transparent to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
               <div className="relative">
                 <div className="mb-4 text-conifer">
