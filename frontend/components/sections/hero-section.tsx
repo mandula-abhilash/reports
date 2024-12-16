@@ -68,7 +68,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="block bg-clip-text text-transparent bg-gradient-to-r from-web-orange via-havelock-blue to-conifer"
+                className="block"
               >
                 Assessment Services
               </motion.span>
