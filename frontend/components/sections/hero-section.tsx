@@ -126,7 +126,7 @@ export function HeroSection() {
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-12"
           >
             <motion.div variants={statsAnimation} className="relative group">
-              <div className="absolute inset-0 bg-web-orange/10 rounded-lg blur-xl transition-all group-hover:bg-web-orange/20"></div>
+              <div className="absolute inset-0 rounded-lg blur-xl transition-all"></div>
               <div className="relative bg-background/60 backdrop-blur-sm rounded-lg border p-6 transition-all">
                 <p className="text-3xl font-bold text-web-orange">500+</p>
                 <p className="text-sm text-muted-foreground">Sites Assessed</p>
@@ -134,7 +134,7 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div variants={statsAnimation} className="relative group">
-              <div className="absolute inset-0 bg-havelock-blue/10 rounded-lg blur-xl transition-all group-hover:bg-havelock-blue/20"></div>
+              <div className="absolute inset-0 rounded-lg blur-xl transition-all"></div>
               <div className="relative bg-background/60 backdrop-blur-sm rounded-lg border p-6 transition-all">
                 <p className="text-3xl font-bold text-havelock-blue">98%</p>
                 <p className="text-sm text-muted-foreground">
@@ -144,7 +144,7 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div variants={statsAnimation} className="relative group">
-              <div className="absolute inset-0 bg-conifer/10 rounded-lg blur-xl transition-all group-hover:bg-conifer/20"></div>
+              <div className="absolute inset-0 rounded-lg blur-xl transition-all"></div>
               <div className="relative bg-background/60 backdrop-blur-sm rounded-lg border p-6 transition-all">
                 <p className="text-3xl font-bold text-conifer">24/7</p>
                 <p className="text-sm text-muted-foreground">
