@@ -53,7 +53,7 @@ interface SiteMapProps {
   polygonPath: google.maps.LatLngLiteral[];
 }
 
-type MapTypeId = "roadmap" | "satellite" | "hybrid" | "terrain" | "OS";
+type MapTypeId = "satellite" | "hybrid" | "OS";
 
 export function SiteMap({
   onLocationSelect,
@@ -65,7 +65,7 @@ export function SiteMap({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [drawingMode, setDrawingMode] =
     useState<google.maps.drawing.OverlayType | null>(null);
-  const [mapType, setMapType] = useState<MapTypeId>("roadmap");
+  const [mapType, setMapType] = useState<MapTypeId>("satellite");
   const [zoomLevel, setZoomLevel] = useState(12);
   const [isEditing, setIsEditing] = useState(false);
   const osMapLayer = useRef<google.maps.ImageMapType | null>(null);

@@ -22,7 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type MapTypeId = "roadmap" | "satellite" | "hybrid" | "terrain" | "OS";
+type MapTypeId = "satellite" | "hybrid" | "OS";
 
 interface MapControlsProps {
   mapType: MapTypeId;
@@ -51,11 +51,6 @@ export function MapControls({
 }: MapControlsProps) {
   const mapTypes = [
     {
-      id: "roadmap" as const,
-      icon: MapIcon,
-      label: "Roadmap",
-    },
-    {
       id: "satellite" as const,
       icon: Satellite,
       label: "Satellite",
@@ -64,11 +59,6 @@ export function MapControls({
       id: "hybrid" as const,
       icon: Layers,
       label: "Hybrid",
-    },
-    {
-      id: "terrain" as const,
-      icon: Mountain,
-      label: "Terrain",
     },
     {
       id: "OS" as const,
