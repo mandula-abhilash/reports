@@ -1,29 +1,31 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useGoogleMaps } from "@/contexts/google-maps-context";
 import {
+  DrawingManager,
   GoogleMap,
   Marker,
-  DrawingManager,
   Polygon,
 } from "@react-google-maps/api";
+import { X } from "lucide-react";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { MapControls } from "./site-map/map-controls";
-import { X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { useGoogleMaps } from "@/contexts/google-maps-context";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+import { MapControls } from "./site-map/map-controls";
 
 const libraries: ("places" | "drawing")[] = ["places", "drawing"];
 
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
-  borderRadius: "0.375rem", // This matches the rounded-md class
+  borderRadius: "0.375rem",
 };
 
 const defaultCenter = {
@@ -41,13 +43,16 @@ const defaultMapOptions = {
 };
 
 interface SiteMapProps {
-  onLocationSelect: (location: google.maps.LatLngLiteral | null, address: string) => void;
+  onLocationSelect: (
+    location: google.maps.LatLngLiteral | null,
+    address: string
+  ) => void;
   onPolygonComplete: (path: google.maps.LatLngLiteral[]) => void;
   selectedLocation: google.maps.LatLngLiteral | null;
   polygonPath: google.maps.LatLngLiteral[];
 }
 
-type MapTypeId = 'roadmap' | 'satellite' | 'hybrid' | 'terrain' | 'OS';
+type MapTypeId = "roadmap" | "satellite" | "hybrid" | "terrain" | "OS";
 
 export function SiteMap({
   onLocationSelect,
@@ -57,8 +62,9 @@ export function SiteMap({
 }: SiteMapProps) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
-  const [mapType, setMapType] = useState<MapTypeId>('roadmap');
+  const [drawingMode, setDrawingMode] =
+    useState<google.maps.drawing.OverlayType | null>(null);
+  const [mapType, setMapType] = useState<MapTypeId>("roadmap");
   const [zoomLevel, setZoomLevel] = useState(12);
   const [isEditing, setIsEditing] = useState(false);
   const osMapLayer = useRef<google.maps.ImageMapType | null>(null);
@@ -73,7 +79,7 @@ export function SiteMap({
     clearSuggestions,
   } = usePlacesAutocomplete({
     requestOptions: {
-      componentRestrictions: { country: 'gb' },
+      componentRestrictions: { country: "gb" },
     },
     debounce: 300,
     cache: 86400,
@@ -109,7 +115,7 @@ export function SiteMap({
       onLocationSelect(location, description);
       setSearchValue(description, false);
       clearSuggestions();
-      
+
       if (map) {
         map.panTo(location);
         map.setZoom(16);
@@ -156,17 +162,21 @@ export function SiteMap({
     }
   };
 
-  const handleZoomChange = (action: 'in' | 'out') => {
+  const handleZoomChange = (action: "in" | "out") => {
     if (map) {
       const currentZoom = map.getZoom() || zoomLevel;
-      const newZoom = action === 'in' ? currentZoom + 1 : currentZoom - 1;
+      const newZoom = action === "in" ? currentZoom + 1 : currentZoom - 1;
       map.setZoom(newZoom);
       setZoomLevel(newZoom);
     }
   };
 
   const toggleDrawingMode = () => {
-    setDrawingMode((current) => current === google.maps.drawing.OverlayType.POLYGON ? null : google.maps.drawing.OverlayType.POLYGON);
+    setDrawingMode((current) =>
+      current === google.maps.drawing.OverlayType.POLYGON
+        ? null
+        : google.maps.drawing.OverlayType.POLYGON
+    );
     setIsEditing(false);
   };
 
@@ -184,7 +194,7 @@ export function SiteMap({
   const handlePolygonComplete = (polygon: google.maps.Polygon) => {
     const path = polygon.getPath();
     const coordinates: google.maps.LatLngLiteral[] = [];
-    
+
     for (let i = 0; i < path.getLength(); i++) {
       const point = path.getAt(i);
       coordinates.push({ lat: point.lat(), lng: point.lng() });
@@ -201,19 +211,19 @@ export function SiteMap({
     if (polygonRef.current) {
       const path = polygonRef.current.getPath();
       const coordinates: google.maps.LatLngLiteral[] = [];
-      
+
       for (let i = 0; i < path.getLength(); i++) {
         const point = path.getAt(i);
         coordinates.push({ lat: point.lat(), lng: point.lng() });
       }
-      
+
       onPolygonComplete(coordinates);
     }
   };
 
   useEffect(() => {
     if (map) {
-      map.addListener('zoom_changed', () => {
+      map.addListener("zoom_changed", () => {
         setZoomLevel(map.getZoom() || zoomLevel);
       });
     }
@@ -241,13 +251,13 @@ export function SiteMap({
                 }
               }}
               placeholder="Search for a location..."
-              className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="w-full bg-white dark:bg-black text-black dark:text-white border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
             {value && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-muted"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-gray-400 dark:text-gray-500 hover:bg-transparent"
                 onClick={handleSearchClear}
               >
                 <X className="h-4 w-4" />
@@ -256,12 +266,12 @@ export function SiteMap({
             )}
           </div>
           {status === "OK" && (
-            <ul className="absolute z-20 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border rounded-md mt-1 shadow-lg max-h-60 overflow-auto">
+            <ul className="absolute z-20 w-full bg-white dark:bg-black border rounded-md mt-1 shadow-lg max-h-60 overflow-auto">
               {data.map(({ place_id, description }) => (
                 <li
                   key={place_id}
                   onClick={() => handleSearchSelect(description)}
-                  className="px-4 py-1.5 hover:bg-muted cursor-pointer text-sm"
+                  className="px-4 py-1.5 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer text-sm"
                 >
                   {description}
                 </li>
