@@ -40,6 +40,7 @@ const defaultMapOptions = {
   zoomControl: false,
   scrollwheel: true,
   gestureHandling: "greedy",
+  minZoom: 6,
 };
 
 interface SiteMapProps {
@@ -150,7 +151,7 @@ export function SiteMap({
       },
       tileSize: new google.maps.Size(256, 256),
       maxZoom: 18,
-      minZoom: 0,
+      minZoom: 6,
       name: "OS",
     });
 
@@ -169,8 +170,10 @@ export function SiteMap({
     if (map) {
       const currentZoom = map.getZoom() || zoomLevel;
       const newZoom = action === "in" ? currentZoom + 1 : currentZoom - 1;
-      map.setZoom(newZoom);
-      setZoomLevel(newZoom);
+      if (newZoom >= 6) {
+        map.setZoom(newZoom);
+        setZoomLevel(newZoom);
+      }
     }
   };
 
@@ -185,10 +188,8 @@ export function SiteMap({
 
   const toggleEdit = () => {
     if (!isEditing) {
-      // Store the current path before starting edit
       setLastSavedPath([...polygonPath]);
     } else {
-      // When finishing edit, save the current path
       if (polygonRef.current) {
         const path = polygonRef.current.getPath();
         const coordinates: google.maps.LatLngLiteral[] = [];
@@ -221,7 +222,7 @@ export function SiteMap({
     onPolygonComplete(coordinates);
     setLastSavedPath(coordinates);
     setDrawingMode(null);
-    polygon.setMap(null); // Remove the temporary polygon
+    polygon.setMap(null);
   };
 
   const onPolygonLoad = (polygon: google.maps.Polygon) => {
