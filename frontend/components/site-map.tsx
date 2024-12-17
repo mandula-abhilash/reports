@@ -70,6 +70,9 @@ export function SiteMap({
   const osMapLayer = useRef<google.maps.ImageMapType | null>(null);
   const polygonRef = useRef<google.maps.Polygon | null>(null);
   const geocoder = useRef<google.maps.Geocoder | null>(null);
+  const [lastSavedPath, setLastSavedPath] = useState<
+    google.maps.LatLngLiteral[]
+  >([]);
 
   const {
     ready,
@@ -172,15 +175,30 @@ export function SiteMap({
   };
 
   const toggleDrawingMode = () => {
-    setDrawingMode((current) =>
-      current === google.maps.drawing.OverlayType.POLYGON
-        ? null
-        : google.maps.drawing.OverlayType.POLYGON
-    );
-    setIsEditing(false);
+    if (drawingMode === google.maps.drawing.OverlayType.POLYGON) {
+      setDrawingMode(null);
+    } else {
+      setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+      setIsEditing(false);
+    }
   };
 
   const toggleEdit = () => {
+    if (!isEditing) {
+      // Store the current path before starting edit
+      setLastSavedPath([...polygonPath]);
+    } else {
+      // When finishing edit, save the current path
+      if (polygonRef.current) {
+        const path = polygonRef.current.getPath();
+        const coordinates: google.maps.LatLngLiteral[] = [];
+        for (let i = 0; i < path.getLength(); i++) {
+          const point = path.getAt(i);
+          coordinates.push({ lat: point.lat(), lng: point.lng() });
+        }
+        onPolygonComplete(coordinates);
+      }
+    }
     setIsEditing(!isEditing);
     setDrawingMode(null);
   };
@@ -189,6 +207,7 @@ export function SiteMap({
     onPolygonComplete([]);
     setDrawingMode(null);
     setIsEditing(false);
+    setLastSavedPath([]);
   };
 
   const handlePolygonComplete = (polygon: google.maps.Polygon) => {
@@ -200,7 +219,9 @@ export function SiteMap({
       coordinates.push({ lat: point.lat(), lng: point.lng() });
     }
     onPolygonComplete(coordinates);
+    setLastSavedPath(coordinates);
     setDrawingMode(null);
+    polygon.setMap(null); // Remove the temporary polygon
   };
 
   const onPolygonLoad = (polygon: google.maps.Polygon) => {
@@ -208,7 +229,7 @@ export function SiteMap({
   };
 
   const handlePolygonChange = () => {
-    if (polygonRef.current) {
+    if (polygonRef.current && isEditing) {
       const path = polygonRef.current.getPath();
       const coordinates: google.maps.LatLngLiteral[] = [];
 

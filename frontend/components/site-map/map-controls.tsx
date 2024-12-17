@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
-  Map,
+  Grid,
   Layers,
+  Map,
+  Map as MapIcon,
+  Mountain,
+  Pencil,
+  Satellite,
+  Trash2,
   ZoomIn,
   ZoomOut,
-  Satellite,
-  Mountain,
-  Map as MapIcon,
-  Grid,
-  Pencil,
-  Trash2,
-  Edit3,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type MapTypeId = 'roadmap' | 'satellite' | 'hybrid' | 'terrain' | 'OS';
+type MapTypeId = "roadmap" | "satellite" | "hybrid" | "terrain" | "OS";
 
 interface MapControlsProps {
   mapType: MapTypeId;
@@ -30,7 +30,7 @@ interface MapControlsProps {
   hasPolygon: boolean;
   isEditing: boolean;
   onMapTypeChange: (type: MapTypeId) => void;
-  onZoomChange: (action: 'in' | 'out') => void;
+  onZoomChange: (action: "in" | "out") => void;
   onDrawingModeToggle: () => void;
   onClearPolygon: () => void;
   onToggleEdit: () => void;
@@ -50,33 +50,34 @@ export function MapControls({
 }: MapControlsProps) {
   const mapTypes = [
     {
-      id: 'roadmap' as const,
+      id: "roadmap" as const,
       icon: MapIcon,
-      label: 'Roadmap',
+      label: "Roadmap",
     },
     {
-      id: 'satellite' as const,
+      id: "satellite" as const,
       icon: Satellite,
-      label: 'Satellite',
+      label: "Satellite",
     },
     {
-      id: 'hybrid' as const,
+      id: "hybrid" as const,
       icon: Layers,
-      label: 'Hybrid',
+      label: "Hybrid",
     },
     {
-      id: 'terrain' as const,
+      id: "terrain" as const,
       icon: Mountain,
-      label: 'Terrain',
+      label: "Terrain",
     },
     {
-      id: 'OS' as const,
+      id: "OS" as const,
       icon: Grid,
-      label: 'OS Master Map',
+      label: "OS Master Map",
     },
   ];
 
-  const selectedStyle = "bg-havelock-blue/20 text-havelock-blue hover:bg-havelock-blue/30";
+  const selectedStyle =
+    "bg-havelock-blue/20 text-havelock-blue hover:bg-havelock-blue/30";
   const disabledStyle = "opacity-50 cursor-not-allowed";
 
   return (
@@ -106,59 +107,67 @@ export function MapControls({
 
         {/* Drawing Controls */}
         <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-lg border shadow-lg p-1 flex flex-col gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`w-8 h-8 ${drawingMode === google.maps.drawing.OverlayType.POLYGON ? selectedStyle : ""}`}
-                onClick={onDrawingModeToggle}
-                disabled={isEditing}
-              >
-                <Pencil className="h-4 w-4" />
-                <span className="sr-only">Draw boundary</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              <p>Draw boundary</p>
-            </TooltipContent>
-          </Tooltip>
+          {/* Only show draw button when not editing */}
+          {!isEditing && !hasPolygon && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`w-8 h-8 ${drawingMode === google.maps.drawing.OverlayType.POLYGON ? selectedStyle : ""}`}
+                  onClick={onDrawingModeToggle}
+                >
+                  <Pencil className="h-4 w-4" />
+                  <span className="sr-only">Draw boundary</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>Draw boundary</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`w-8 h-8 ${isEditing ? selectedStyle : ""} ${!hasPolygon ? disabledStyle : ""}`}
-                onClick={onToggleEdit}
-                disabled={!hasPolygon || drawingMode === google.maps.drawing.OverlayType.POLYGON}
-              >
-                <Edit3 className="h-4 w-4" />
-                <span className="sr-only">Edit boundary</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              <p>Edit boundary</p>
-            </TooltipContent>
-          </Tooltip>
+          {/* Only show edit and delete buttons when a polygon exists and not in drawing mode */}
+          {hasPolygon &&
+            drawingMode !== google.maps.drawing.OverlayType.POLYGON && (
+              <>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={`w-8 h-8 ${isEditing ? selectedStyle : ""}`}
+                      onClick={onToggleEdit}
+                    >
+                      <Pencil className="h-4 w-4" />
+                      <span className="sr-only">
+                        {isEditing ? "Stop Editing" : "Edit boundary"}
+                      </span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>{isEditing ? "Stop Editing" : "Edit boundary"}</p>
+                  </TooltipContent>
+                </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`w-8 h-8 ${!hasPolygon ? disabledStyle : ""}`}
-                onClick={onClearPolygon}
-                disabled={!hasPolygon || drawingMode === google.maps.drawing.OverlayType.POLYGON}
-              >
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Clear boundary</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              <p>Clear boundary</p>
-            </TooltipContent>
-          </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-8 h-8"
+                      onClick={onClearPolygon}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Clear boundary</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>Clear boundary</p>
+                  </TooltipContent>
+                </Tooltip>
+              </>
+            )}
         </div>
 
         {/* Zoom Controls */}
@@ -169,7 +178,7 @@ export function MapControls({
                 variant="ghost"
                 size="icon"
                 className="w-8 h-8"
-                onClick={() => onZoomChange('in')}
+                onClick={() => onZoomChange("in")}
               >
                 <ZoomIn className="h-4 w-4" />
                 <span className="sr-only">Zoom in</span>
@@ -190,7 +199,7 @@ export function MapControls({
                 variant="ghost"
                 size="icon"
                 className="w-8 h-8"
-                onClick={() => onZoomChange('out')}
+                onClick={() => onZoomChange("out")}
               >
                 <ZoomOut className="h-4 w-4" />
                 <span className="sr-only">Zoom out</span>
