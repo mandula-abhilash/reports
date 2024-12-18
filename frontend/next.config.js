@@ -20,13 +20,13 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: `
-              default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://js.stripe.com https://m.stripe.network;
-              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com;
-              font-src 'self' https://fonts.gstatic.com;
+              default-src 'self' wss://*.fgbacumen.com https://api.ipify.org;
+              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://maps.googleapis.com https://maps.gstatic.com https://khms0.googleapis.com https://khms1.googleapis.com https://api.maptiler.com https://api.os.uk https://khm.google.com https://khm0.google.com https://khm1.google.com https://khms0.google.com https://khms1.google.com https://khms2.google.com https://khms3.google.com https://geo0.ggpht.com https://geo1.ggpht.com https://geo2.ggpht.com https://geo3.ggpht.com https://lh3.ggpht.com https://lh4.ggpht.com https://lh5.ggpht.com https://lh6.ggpht.com https://streetviewpixels-pa.googleapis.com https://developers.google.com https://tile.googleapis.com https://tile.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org https://maps.google.com/mapfiles/ms/icons/blue-dot.png;
+              script-src 'unsafe-eval' 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com https://clients.l.google.com https://maps.l.google.com https://mt.l.google.com https://khm.l.google.com https://csi.gstatic.com https://js.stripe.com https://m.stripe.network;
+              style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
+              font-src 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com;
+              connect-src 'self' https://maps.googleapis.com https://api.ipify.org https://googleapis.l.google.com https://tile.googleapis.com https://api.stripe.com https://m.stripe.network;
               frame-src 'self' https://js.stripe.com https://maps.googleapis.com https://m.stripe.network;
-              connect-src 'self' https://maps.googleapis.com https://api.stripe.com https://m.stripe.network;
               worker-src 'self' blob:;
               child-src blob:;
               object-src 'none';
@@ -39,24 +39,28 @@ const nextConfig = {
               .trim(),
           },
           {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
           {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
+            key: "X-Frame-Options",
+            value: "sameorigin",
           },
           {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(self)",
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "same-origin",
           },
           {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "autoplay=(), camera=(), microphone=()",
           },
           {
             key: "Set-Cookie",
