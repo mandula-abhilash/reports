@@ -40,6 +40,7 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
+          <ThemeToggle />
           {isLoggedIn ? (
             <>
               <TooltipProvider>
@@ -79,7 +80,6 @@ export function Header() {
               </Link>
             </>
           )}
-          <ThemeToggle />
         </div>
 
         {/* Mobile Navigation */}
