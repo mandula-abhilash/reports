@@ -1,34 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { Menu, Coins, Power } from "lucide-react";
-import LogoWhite from '@/components/logo/LogoWhite';
-import LogoBlack from '@/components/logo/LogoBlack';
 import { usePathname } from "next/navigation";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Coins, LogOut, Menu } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import LogoBlack from "@/components/logo/LogoBlack";
+import LogoWhite from "@/components/logo/LogoWhite";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   const pathname = usePathname();
   // This would come from your auth context in a real app
   const userTokens = 15;
-  const isLoggedIn = pathname.startsWith("/dashboard") || pathname === "/pricing";
+  const isLoggedIn =
+    pathname.startsWith("/dashboard") || pathname === "/pricing";
 
   return (
     <header className="fixed w-full top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4 md:px-8">
-        <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center space-x-2">
+        <Link
+          href={isLoggedIn ? "/dashboard" : "/"}
+          className="flex items-center space-x-2"
+        >
           <div className="block dark:hidden w-48 h-10">
             <LogoBlack />
           </div>
@@ -36,7 +37,7 @@ export function Header() {
             <LogoWhite />
           </div>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
@@ -60,9 +61,9 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="rounded-full"
-                onClick={() => window.location.href = "/login"}
+                onClick={() => (window.location.href = "/login")}
               >
-                <Power className="h-5 w-5" />
+                <LogOut className="h-5 w-5" />
                 <span className="sr-only">Logout</span>
               </Button>
             </>
@@ -96,7 +97,10 @@ export function Header() {
                 {isLoggedIn ? (
                   <>
                     <Link href="/pricing">
-                      <Button variant="outline" className="w-full justify-start space-x-2">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start space-x-2"
+                      >
                         <Coins className="h-4 w-4" />
                         <span>{userTokens} Tokens</span>
                       </Button>
@@ -104,9 +108,9 @@ export function Header() {
                     <Button
                       variant="ghost"
                       className="justify-start"
-                      onClick={() => window.location.href = "/login"}
+                      onClick={() => (window.location.href = "/login")}
                     >
-                      <Power className="h-5 w-5 mr-2" />
+                      <LogOut className="h-5 w-5 mr-2" />
                       Logout
                     </Button>
                   </>

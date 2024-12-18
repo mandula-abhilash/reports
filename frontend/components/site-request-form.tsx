@@ -1,16 +1,17 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
 import { SiteMap } from "@/components/site-map";
-import { useState } from "react";
 
 const siteRequestSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,9 +23,12 @@ const siteRequestSchema = z.object({
 export function SiteRequestForm() {
   const { toast } = useToast();
   const router = useRouter();
-  const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [selectedLocation, setSelectedLocation] =
+    useState<google.maps.LatLngLiteral | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<string>("");
-  const [polygonPath, setPolygonPath] = useState<google.maps.LatLngLiteral[]>([]);
+  const [polygonPath, setPolygonPath] = useState<google.maps.LatLngLiteral[]>(
+    []
+  );
 
   const {
     register,
@@ -53,12 +57,13 @@ export function SiteRequestForm() {
       };
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+
       toast({
         title: "Request Submitted",
-        description: "Your site assessment request has been submitted successfully.",
+        description:
+          "Your site assessment request has been submitted successfully.",
       });
-      
+
       router.push("/dashboard/confirmation");
     } catch (error) {
       toast({
@@ -69,7 +74,10 @@ export function SiteRequestForm() {
     }
   };
 
-  const handleLocationSelect = (location: google.maps.LatLngLiteral | null, address: string) => {
+  const handleLocationSelect = (
+    location: google.maps.LatLngLiteral | null,
+    address: string
+  ) => {
     setSelectedLocation(location);
     setSelectedAddress(address);
   };
@@ -79,11 +87,26 @@ export function SiteRequestForm() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-13rem)]">
-      <div className="flex flex-col h-full">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
-          <Card className="flex-grow p-6 space-y-6">
-            <div className="space-y-2">
+    <div className="relative h-[calc(100vh-6rem)]">
+      {/* Full-screen map */}
+      <div className="absolute inset-0">
+        <SiteMap
+          onLocationSelect={handleLocationSelect}
+          onPolygonComplete={handlePolygonComplete}
+          selectedLocation={selectedLocation}
+          polygonPath={polygonPath}
+        />
+      </div>
+
+      {/* Overlay form */}
+      <Card className="absolute left-4 bottom-4 w-96 p-4 bg-background/95 backdrop-blur-sm border-2">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-2">
+            <h2 className="text-xl font-bold uppercase">
+              New Site Assessment Request
+            </h2>
+
+            <div className="space-y-1">
               <Label htmlFor="name">Full Name</Label>
               <Input
                 id="name"
@@ -91,11 +114,13 @@ export function SiteRequestForm() {
                 className={errors.name ? "border-destructive" : ""}
               />
               {errors.name && (
-                <p className="text-sm text-destructive">{errors.name.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="businessName">Business Name</Label>
               <Input
                 id="businessName"
@@ -103,11 +128,13 @@ export function SiteRequestForm() {
                 className={errors.businessName ? "border-destructive" : ""}
               />
               {errors.businessName && (
-                <p className="text-sm text-destructive">{errors.businessName.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.businessName.message}
+                </p>
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="contactEmail">Contact Email</Label>
               <Input
                 id="contactEmail"
@@ -116,11 +143,13 @@ export function SiteRequestForm() {
                 className={errors.contactEmail ? "border-destructive" : ""}
               />
               {errors.contactEmail && (
-                <p className="text-sm text-destructive">{errors.contactEmail.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.contactEmail.message}
+                </p>
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="siteName">Site Name</Label>
               <Input
                 id="siteName"
@@ -128,36 +157,29 @@ export function SiteRequestForm() {
                 className={errors.siteName ? "border-destructive" : ""}
               />
               {errors.siteName && (
-                <p className="text-sm text-destructive">{errors.siteName.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.siteName.message}
+                </p>
               )}
             </div>
+          </div>
 
-            {selectedAddress && (
-              <div className="space-y-2">
-                <Label>Selected Location</Label>
-                <p className="text-sm text-muted-foreground">{selectedAddress}</p>
-              </div>
-            )}
-          </Card>
+          {selectedAddress && (
+            <div className="space-y-1 mt-4">
+              <Label>Selected Location</Label>
+              <p className="text-sm text-muted-foreground">{selectedAddress}</p>
+            </div>
+          )}
 
           <Button
             type="submit"
-            className="w-full mt-6 bg-web-orange hover:bg-web-orange/90 text-white"
+            className="w-full bg-web-orange hover:bg-web-orange/90 text-white mt-4"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
         </form>
-      </div>
-
-      <div className="h-full">
-        <SiteMap
-          onLocationSelect={handleLocationSelect}
-          onPolygonComplete={handlePolygonComplete}
-          selectedLocation={selectedLocation}
-          polygonPath={polygonPath}
-        />
-      </div>
+      </Card>
     </div>
   );
 }

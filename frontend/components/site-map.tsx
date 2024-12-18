@@ -74,6 +74,8 @@ export function SiteMap({
   const [lastSavedPath, setLastSavedPath] = useState<
     google.maps.LatLngLiteral[]
   >([]);
+  // Add a key state to force polygon redraw
+  const [polygonKey, setPolygonKey] = useState(0);
 
   const {
     ready,
@@ -95,6 +97,17 @@ export function SiteMap({
       geocoder.current = new google.maps.Geocoder();
     }
   }, []);
+
+  // Add zoom change handler
+  const handleZoomChanged = () => {
+    console.log("CHHHHHHHH");
+    if (map) {
+      const newZoom = map.getZoom() || zoomLevel;
+      setZoomLevel(newZoom);
+      // Force polygon redraw by updating the key
+      setPolygonKey((prev) => prev + 1);
+    }
+  };
 
   const updateLocationInfo = async (latLng: google.maps.LatLngLiteral) => {
     if (geocoder.current) {
@@ -144,6 +157,9 @@ export function SiteMap({
 
   const handleMapLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
+
+    // Add zoom changed listener
+    map.addListener("zoom_changed", handleZoomChanged);
 
     const osMapType = new google.maps.ImageMapType({
       getTileUrl: (coord, zoom) => {
@@ -243,14 +259,6 @@ export function SiteMap({
     }
   };
 
-  useEffect(() => {
-    if (map) {
-      map.addListener("zoom_changed", () => {
-        setZoomLevel(map.getZoom() || zoomLevel);
-      });
-    }
-  }, [map, zoomLevel]);
-
   if (!isLoaded) {
     return (
       <Card className="h-full rounded-md flex items-center justify-center">
@@ -321,6 +329,7 @@ export function SiteMap({
 
           {polygonPath.length > 0 && (
             <Polygon
+              key={polygonKey}
               onLoad={onPolygonLoad}
               paths={polygonPath}
               options={{
