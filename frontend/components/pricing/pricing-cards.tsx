@@ -1,5 +1,8 @@
 "use client";
 
+import { loadStripe } from "@stripe/stripe-js";
+import { Check, Coins } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Coins, Check } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
 import { useToast } from "@/components/ui/use-toast";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
 
 const pricingPlans = [
   {
@@ -25,8 +28,8 @@ const pricingPlans = [
       "5 Assessment Tokens",
       "Valid for 12 months",
       "Detailed PDF Reports",
-      "Email Support"
-    ]
+      "Email Support",
+    ],
   },
   {
     name: "Professional",
@@ -38,8 +41,8 @@ const pricingPlans = [
       "55 Assessment Tokens",
       "Valid for 24 months",
       "Priority Support",
-      "Custom Branding"
-    ]
+      "Custom Branding",
+    ],
   },
   {
     name: "Enterprise",
@@ -52,35 +55,45 @@ const pricingPlans = [
       "Never Expire",
       "24/7 Priority Support",
       "Custom Branding",
-      "Dedicated Account Manager"
-    ]
-  }
+      "Dedicated Account Manager",
+    ],
+  },
 ];
 
 export function PricingCards() {
   const { toast } = useToast();
 
-  const handlePurchase = async (plan: typeof pricingPlans[0]) => {
+  const handlePurchase = async (plan: (typeof pricingPlans)[0]) => {
     try {
-      // Call your Express backend endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any auth headers if needed
-          // "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          planName: plan.name,
-          tokens: plan.tokens,
-          amount: plan.price,
-        }),
-        credentials: 'include', // Important for cookies if you're using session-based auth
-      });
+      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+        toast({
+          variant: "destructive",
+          title: "Configuration Error",
+          description: "Stripe is not properly configured.",
+        });
+        return;
+      }
+
+      // Rest of the function remains the same
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/checkout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            planName: plan.name,
+            tokens: plan.tokens,
+            amount: plan.price,
+          }),
+          credentials: "include",
+        }
+      );
 
       const { sessionId } = await response.json();
       const stripe = await stripePromise;
-      
+
       if (!stripe) {
         throw new Error("Stripe failed to load");
       }
@@ -118,7 +131,9 @@ export function PricingCards() {
               <div className="flex items-baseline space-x-2">
                 <span className="text-4xl font-bold">£{plan.price}</span>
                 {plan.savings && (
-                  <span className="text-sm text-green-500">Save £{plan.savings}</span>
+                  <span className="text-sm text-green-500">
+                    Save £{plan.savings}
+                  </span>
                 )}
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
@@ -136,7 +151,7 @@ export function PricingCards() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button 
+            <Button
               className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
               onClick={() => handlePurchase(plan)}
             >
