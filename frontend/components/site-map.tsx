@@ -37,6 +37,7 @@ const defaultMapOptions = {
   streetViewControl: false,
   mapTypeControl: false,
   fullscreenControl: false,
+  rotateControl: false,
   zoomControl: false,
   scrollwheel: true,
   gestureHandling: "greedy",
@@ -66,7 +67,7 @@ export function SiteMap({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [drawingMode, setDrawingMode] =
     useState<google.maps.drawing.OverlayType | null>(null);
-  const [mapType, setMapType] = useState<MapTypeId>("satellite");
+  const [mapType, setMapType] = useState<MapTypeId>("hybrid");
   const [zoomLevel, setZoomLevel] = useState(12);
   const [isEditing, setIsEditing] = useState(false);
   const osMapLayer = useRef<google.maps.ImageMapType | null>(null);
@@ -272,7 +273,7 @@ export function SiteMap({
                 }
               }}
               placeholder="Search for a location..."
-              className="w-full bg-white text-black border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full bg-white text-black border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
             />
             {value && (
               <Button
@@ -287,12 +288,12 @@ export function SiteMap({
             )}
           </div>
           {status === "OK" && (
-            <ul className="absolute z-20 w-full bg-white dark:bg-black border rounded-md mt-1 shadow-lg max-h-60 overflow-auto">
+            <ul className="absolute z-20 w-full bg-white border rounded-md mt-1 shadow-lg max-h-60 overflow-auto">
               {data.map(({ place_id, description }) => (
                 <li
                   key={place_id}
                   onClick={() => handleSearchSelect(description)}
-                  className="px-4 py-1.5 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer text-sm"
+                  className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm"
                 >
                   {description}
                 </li>
