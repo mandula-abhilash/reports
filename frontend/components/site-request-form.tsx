@@ -87,19 +87,9 @@ export function SiteRequestForm() {
   };
 
   return (
-    <div className="relative h-[calc(100vh-6rem)]">
-      {/* Full-screen map */}
-      <div className="absolute inset-0">
-        <SiteMap
-          onLocationSelect={handleLocationSelect}
-          onPolygonComplete={handlePolygonComplete}
-          selectedLocation={selectedLocation}
-          polygonPath={polygonPath}
-        />
-      </div>
-
-      {/* Overlay form */}
-      <Card className="absolute left-4 bottom-4 w-96 p-4 bg-background/95 backdrop-blur-sm border-2">
+    <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-6rem)]">
+      {/* Form Card - Above map on small/medium screens, left side on desktop */}
+      <Card className="lg:w-[384px] p-4 bg-background/95 backdrop-blur-sm border-2">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
             <h2 className="text-xl font-bold uppercase">
@@ -180,6 +170,16 @@ export function SiteRequestForm() {
           </Button>
         </form>
       </Card>
+
+      {/* Map - Below form on small/medium screens, right side on desktop */}
+      <div className="flex-1 h-full min-h-[500px]">
+        <SiteMap
+          onLocationSelect={handleLocationSelect}
+          onPolygonComplete={handlePolygonComplete}
+          selectedLocation={selectedLocation}
+          polygonPath={polygonPath}
+        />
+      </div>
     </div>
   );
 }
