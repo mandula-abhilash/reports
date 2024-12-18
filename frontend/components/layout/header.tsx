@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Coins, LogOut, Menu } from "lucide-react";
@@ -12,16 +13,24 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { MobileNav } from "@/components/dashboard-nav/mobile-nav";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
   // This would come from your auth context in a real app
   const userTokens = 15;
   const isLoggedIn =
     pathname.startsWith("/dashboard") || pathname === "/pricing";
+
+  const getActiveTab = () => {
+    if (pathname.includes("/requests")) return "my-requests";
+    if (pathname.includes("/profile")) return "profile";
+    return "new-request";
+  };
 
   return (
     <header className="fixed w-full top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -85,7 +94,7 @@ export function Header() {
         {/* Mobile Navigation */}
         <div className="md:hidden flex items-center space-x-4">
           <ThemeToggle />
-          <Sheet>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Menu className="h-5 w-5" />
@@ -96,6 +105,10 @@ export function Header() {
               <nav className="flex flex-col space-y-4 mt-8">
                 {isLoggedIn ? (
                   <>
+                    <MobileNav
+                      activeTab={getActiveTab()}
+                      onClose={() => setIsOpen(false)}
+                    />
                     <Link href="/pricing">
                       <Button
                         variant="outline"
