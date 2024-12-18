@@ -1,12 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://reports.fgbacumen.com"),
+  metadataBase: new URL("https://fgbacumen.com"),
   title: {
     default: "FGB Acumen - Site Assessment Reports",
     template: "%s | FGB Acumen",
@@ -74,11 +80,6 @@ export const metadata: Metadata = {
     description:
       "Professional site assessment services with comprehensive reporting. Trust FGB Acumen for detailed insights and professional assessments.",
     images: ["/twitter-image.jpg"],
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
   verification: {
     google: "google-site-verification-code", // Replace with actual verification code
