@@ -99,6 +99,20 @@ export function SiteMap({
     }
   }, []);
 
+  useEffect(() => {
+    if (map) {
+      // Add zoom_changed event listener
+      const listener = map.addListener("zoom_changed", () => {
+        setZoomLevel(map.getZoom() || zoomLevel);
+      });
+
+      return () => {
+        // Clean up listener when component unmounts
+        google.maps.event.removeListener(listener);
+      };
+    }
+  }, [map]);
+
   const handleZoomChanged = () => {
     if (map) {
       const newZoom = map.getZoom() || zoomLevel;
@@ -133,7 +147,7 @@ export function SiteMap({
 
       if (map) {
         map.panTo(location);
-        map.setZoom(16);
+        map.setZoom(18);
       }
     } catch (error) {
       console.error("Error selecting location:", error);
