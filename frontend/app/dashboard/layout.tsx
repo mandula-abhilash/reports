@@ -21,12 +21,12 @@ export default function DashboardLayout({
   return (
     <MainLayout>
       <GoogleMapsProvider>
-        <div className="px-4 md:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6">
-            <div className="hidden lg:block">
+        <div className="h-[calc(100vh-3.5rem)]">
+          <div className="grid h-full grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 p-6">
+            <div className="hidden lg:block h-full">
               <DashboardNav activeTab={getActiveTab()} />
             </div>
-            <main className="space-y-6">{children}</main>
+            <main className="space-y-6 overflow-y-auto">{children}</main>
           </div>
         </div>
       </GoogleMapsProvider>
