@@ -40,7 +40,7 @@ export function GoogleMapsProvider({
         libraries={libraries}
         onLoad={handleLoad}
         onError={handleError}
-        loadingElement={<MapLoading />}
+        // loadingElement={<MapLoading />}
       >
         <div>{children}</div>
       </LoadScriptNext>
