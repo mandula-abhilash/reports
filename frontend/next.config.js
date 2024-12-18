@@ -3,7 +3,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { unoptimized: true },
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
+    ],
+  },
   async headers() {
     return [
       {
@@ -33,11 +41,19 @@ const nextConfig = {
           },
           {
             key: "Referrer-Policy",
-            value: "origin-when-cross-origin",
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(self)",
+          },
+          {
+            key: "Set-Cookie",
+            value: "__cf_bm=*; Secure; SameSite=Strict; Partitioned;",
+          },
+          {
+            key: "Set-Cookie",
+            value: "_cfuvid=*; Secure; SameSite=Strict; Partitioned;",
           },
         ],
       },
