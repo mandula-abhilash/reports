@@ -1,9 +1,10 @@
 "use client";
 
-import { MainLayout } from "@/components/layout/main-layout";
-import { DashboardNav } from "@/components/dashboard-nav";
 import { usePathname } from "next/navigation";
 import { GoogleMapsProvider } from "@/contexts/google-maps-context";
+
+import { DashboardNav } from "@/components/dashboard-nav";
+import { MainLayout } from "@/components/layout/main-layout";
 
 export default function DashboardLayout({
   children,

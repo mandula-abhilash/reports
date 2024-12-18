@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleMaps } from "@/contexts/google-maps-context";
 import {
@@ -17,7 +15,9 @@ import usePlacesAutocomplete, {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
+import { MapLoading } from "./site-map/loading";
 import { MapControls } from "./site-map/map-controls";
 
 const libraries: ("places" | "drawing")[] = ["places", "drawing"];
@@ -74,7 +74,6 @@ export function SiteMap({
   const [lastSavedPath, setLastSavedPath] = useState<
     google.maps.LatLngLiteral[]
   >([]);
-  // Add a key state to force polygon redraw
   const [polygonKey, setPolygonKey] = useState(0);
 
   const {
@@ -98,13 +97,10 @@ export function SiteMap({
     }
   }, []);
 
-  // Add zoom change handler
   const handleZoomChanged = () => {
-    console.log("CHHHHHHHH");
     if (map) {
       const newZoom = map.getZoom() || zoomLevel;
       setZoomLevel(newZoom);
-      // Force polygon redraw by updating the key
       setPolygonKey((prev) => prev + 1);
     }
   };
@@ -157,8 +153,6 @@ export function SiteMap({
 
   const handleMapLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
-
-    // Add zoom changed listener
     map.addListener("zoom_changed", handleZoomChanged);
 
     const osMapType = new google.maps.ImageMapType({
@@ -260,11 +254,7 @@ export function SiteMap({
   };
 
   if (!isLoaded) {
-    return (
-      <Card className="h-full rounded-md flex items-center justify-center">
-        <div className="text-muted-foreground">Loading map...</div>
-      </Card>
-    );
+    return <MapLoading />;
   }
 
   return (

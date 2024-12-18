@@ -1,7 +1,7 @@
-"use client";
-
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { LoadScriptNext } from "@react-google-maps/api";
+
+import { MapLoading } from "@/components/site-map/loading";
 
 const libraries: ("places" | "drawing")[] = ["places", "drawing"];
 
@@ -17,7 +17,11 @@ const GoogleMapsContext = createContext<GoogleMapsContextType>({
 
 export const useGoogleMaps = () => useContext(GoogleMapsContext);
 
-export function GoogleMapsProvider({ children }: { children: React.ReactNode }) {
+export function GoogleMapsProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState<Error>();
 
@@ -36,7 +40,7 @@ export function GoogleMapsProvider({ children }: { children: React.ReactNode }) 
         libraries={libraries}
         onLoad={handleLoad}
         onError={handleError}
-        loadingElement={<div>Loading...</div>}
+        loadingElement={<MapLoading />}
       >
         <div>{children}</div>
       </LoadScriptNext>
