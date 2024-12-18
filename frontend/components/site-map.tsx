@@ -41,6 +41,7 @@ const defaultMapOptions = {
   scrollwheel: true,
   gestureHandling: "greedy",
   minZoom: 6,
+  mapTypeId: "hybrid",
 };
 
 interface SiteMapProps {
@@ -271,7 +272,7 @@ export function SiteMap({
                 }
               }}
               placeholder="Search for a location..."
-              className="w-full bg-white dark:bg-black text-black dark:text-white border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full bg-white text-black border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
             {value && (
               <Button
