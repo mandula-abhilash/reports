@@ -275,7 +275,7 @@ export function SiteMap({
 
   return (
     <Card className="h-full relative rounded-md overflow-hidden">
-      <div className="absolute top-4 left-4 right-20 z-10">
+      <div className="absolute top-4 left-4 right-6 z-10">
         <div className="relative">
           <div className="relative">
             <Input
