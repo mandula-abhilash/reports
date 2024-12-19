@@ -15,6 +15,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 
 const registerSchema = z
   .object({
+    name: z.string().min(1, "Name is required"),
     email: z.string().email("Please enter a valid email address"),
     password: z
       .string()
@@ -41,6 +42,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     try {
       await registerUser({
+        name: data.name,
         email: data.email,
         password: data.password,
       });
@@ -72,6 +74,20 @@ export default function RegisterPage() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  {...register("name")}
+                  className={errors.name ? "border-destructive" : ""}
+                />
+                {errors.name && (
+                  <p className="text-sm text-destructive">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
