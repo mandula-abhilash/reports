@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { login } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,17 +31,18 @@ export default function LoginPage() {
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await login(data);
       toast({
         title: "Login Successful",
         description: "Welcome back!",
       });
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password.",
+        description:
+          error.response?.data?.message || "Invalid email or password.",
       });
     }
   };

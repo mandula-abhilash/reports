@@ -1,29 +1,35 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+
+import { register as registerUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import Link from "next/link";
 import { MainLayout } from "@/components/layout/main-layout";
 
-const registerSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(100, "Password must not exceed 100 characters"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password must not exceed 100 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export default function RegisterPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -34,16 +40,21 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await registerUser({
+        email: data.email,
+        password: data.password,
+      });
+
       toast({
         title: "Registration Successful",
-        description: "Please check your email to verify your account.",
+        description: "Please sign in with your new account.",
       });
-    } catch (error) {
+      router.push("/login");
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: "Please try again later.",
+        description: error.response?.data?.message || "Please try again later.",
       });
     }
   };
@@ -70,7 +81,9 @@ export default function RegisterPage() {
                   className={errors.email ? "border-destructive" : ""}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -114,7 +127,10 @@ export default function RegisterPage() {
 
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <Link href="/login" className="text-havelock-blue hover:underline">
+                <Link
+                  href="/login"
+                  className="text-havelock-blue hover:underline"
+                >
                   Sign in
                 </Link>
               </p>

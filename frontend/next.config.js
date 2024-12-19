@@ -13,6 +13,22 @@ const nextConfig = {
     ],
   },
   async headers() {
+    // Base connect-src directive for production
+    const connectSrc = [
+      "'self'",
+      "https://maps.googleapis.com",
+      "https://api.ipify.org",
+      "https://googleapis.l.google.com",
+      "https://tile.googleapis.com",
+      "https://api.stripe.com",
+      "https://m.stripe.network",
+    ];
+
+    // Add localhost only in development
+    if (process.env.NODE_ENV === "development") {
+      connectSrc.push("http://localhost:*");
+    }
+
     return [
       {
         source: "/:path*",
@@ -25,7 +41,7 @@ const nextConfig = {
               script-src 'unsafe-eval' 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com https://clients.l.google.com https://maps.l.google.com https://mt.l.google.com https://khm.l.google.com https://csi.gstatic.com https://js.stripe.com https://m.stripe.network;
               style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
               font-src 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com;
-              connect-src 'self' https://maps.googleapis.com https://api.ipify.org https://googleapis.l.google.com https://tile.googleapis.com https://api.stripe.com https://m.stripe.network;
+              connect-src ${connectSrc.join(" ")};
               frame-src 'self' https://js.stripe.com https://maps.googleapis.com https://m.stripe.network;
               worker-src 'self' blob:;
               child-src blob:;
