@@ -40,9 +40,13 @@ export function GoogleMapsProvider({
         libraries={libraries}
         onLoad={handleLoad}
         onError={handleError}
-        // loadingElement={<MapLoading />}
+        loadingElement={
+          <div className="h-screen w-screen flex m-32 items-center justify-center bg-red-500">
+            <MapLoading />
+          </div>
+        }
       >
-        <div>{children}</div>
+        <div className="h-full">{children}</div>
       </LoadScriptNext>
     </GoogleMapsContext.Provider>
   );

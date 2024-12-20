@@ -269,10 +269,6 @@ export function SiteMap({
     }
   };
 
-  if (!isLoaded) {
-    return <MapLoading />;
-  }
-
   return (
     <Card className="h-full relative rounded-md overflow-hidden">
       <div className="absolute top-4 left-4 right-6 z-10">
