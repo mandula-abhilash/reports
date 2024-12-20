@@ -31,7 +31,11 @@ export default function LoginPage() {
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      await login(data);
+      await login({
+        email: data.email,
+        password: data.password,
+      });
+
       toast({
         title: "Login Successful",
         description: "Welcome back!",
@@ -42,7 +46,7 @@ export default function LoginPage() {
         variant: "destructive",
         title: "Login Failed",
         description:
-          error.response?.data?.message || "Invalid email or password.",
+          error.response?.data?.message || "Invalid email or password",
       });
     }
   };

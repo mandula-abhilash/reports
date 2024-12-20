@@ -49,7 +49,7 @@ export default function RegisterPage() {
 
       toast({
         title: "Registration Successful",
-        description: "Please sign in with your new account.",
+        description: "Please verify your email.",
       });
       router.push("/login");
     } catch (error: any) {
