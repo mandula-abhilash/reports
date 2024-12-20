@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Coins, LogOut, Menu } from "lucide-react";
+import { CirclePower, Coins, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -73,7 +73,7 @@ export function Header() {
                 className="rounded-full"
                 onClick={() => (window.location.href = "/login")}
               >
-                <LogOut className="h-5 w-5" />
+                <CirclePower className="h-6 w-6" />
                 <span className="sr-only">Logout</span>
               </Button>
             </>
@@ -123,7 +123,7 @@ export function Header() {
                       className="justify-start"
                       onClick={() => (window.location.href = "/login")}
                     >
-                      <LogOut className="h-5 w-5 mr-2" />
+                      <CirclePower className="h-5 w-5 mr-2" />
                       Logout
                     </Button>
                   </>
