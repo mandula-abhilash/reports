@@ -41,7 +41,7 @@ export function GoogleMapsProvider({
         onLoad={handleLoad}
         onError={handleError}
         loadingElement={
-          <div className="h-screen w-screen flex m-32 items-center justify-center bg-red-500">
+          <div className="h-screen w-screen flex m-32 items-center justify-center">
             <MapLoading />
           </div>
         }
