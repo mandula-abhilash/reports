@@ -6,7 +6,13 @@ import { usePathname } from "next/navigation";
 import { CirclePower, Coins, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -102,6 +108,10 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetTitle>Navigation Menu</SheetTitle>
+              <SheetDescription>
+                Access your account and navigation options
+              </SheetDescription>
               <nav className="flex flex-col space-y-4 mt-8">
                 {isLoggedIn ? (
                   <>
