@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, XCircle } from "lucide-react";
 
@@ -17,6 +17,7 @@ export default function VerifyEmailPage() {
     "loading"
   );
   const [message, setMessage] = useState("");
+  const verificationAttempted = useRef(false);
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -25,21 +26,24 @@ export default function VerifyEmailPage() {
       setMessage("Invalid verification link");
       return;
     }
+    if (!verificationAttempted.current && token) {
+      verificationAttempted.current = true;
 
-    const verifyToken = async () => {
-      try {
-        const response = await verifyEmail(token);
-        setStatus("success");
-        setMessage(response.message || "Email verified successfully");
-      } catch (error: any) {
-        setStatus("error");
-        setMessage(
-          error.response?.data?.error?.details || "Email verification failed"
-        );
-      }
-    };
+      const verifyToken = async () => {
+        try {
+          const response = await verifyEmail(token);
+          setStatus("success");
+          setMessage(response.message || "Email verified successfully");
+        } catch (error: any) {
+          setStatus("error");
+          setMessage(
+            error.response?.data?.error?.details || "Email verification failed"
+          );
+        }
+      };
 
-    verifyToken();
+      verifyToken();
+    }
   }, [searchParams]);
 
   return (
