@@ -87,98 +87,102 @@ export function SiteRequestForm() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-6rem)]">
-      {/* Form Card - Above map on small/medium screens, left side on desktop */}
-      <Card className="lg:w-[384px] p-4 bg-background/95 backdrop-blur-sm border-2">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold uppercase">
-              New Site Assessment Request
-            </h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold uppercase">
+        New Site Assessment Request
+      </h2>
 
-            <div className="space-y-1 pt-4">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                {...register("name")}
-                className={errors.name ? "border-destructive" : ""}
-              />
-              {errors.name && (
-                <p className="text-sm text-destructive">
-                  {errors.name.message}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Form Card - Takes 1 column */}
+        <Card className="p-4 bg-background/95 backdrop-blur-sm border-2 h-[450px] lg:h-[calc(100vh-10rem)] lg:overflow-y-auto">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  {...register("name")}
+                  className={errors.name ? "border-destructive" : ""}
+                />
+                {errors.name && (
+                  <p className="text-sm text-destructive">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="businessName">Business Name</Label>
+                <Input
+                  id="businessName"
+                  {...register("businessName")}
+                  className={errors.businessName ? "border-destructive" : ""}
+                />
+                {errors.businessName && (
+                  <p className="text-sm text-destructive">
+                    {errors.businessName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="contactEmail">Contact Email</Label>
+                <Input
+                  id="contactEmail"
+                  type="email"
+                  {...register("contactEmail")}
+                  className={errors.contactEmail ? "border-destructive" : ""}
+                />
+                {errors.contactEmail && (
+                  <p className="text-sm text-destructive">
+                    {errors.contactEmail.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="siteName">Site Name</Label>
+                <Input
+                  id="siteName"
+                  {...register("siteName")}
+                  className={errors.siteName ? "border-destructive" : ""}
+                />
+                {errors.siteName && (
+                  <p className="text-sm text-destructive">
+                    {errors.siteName.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {selectedAddress && (
+              <div className="space-y-1 mt-4">
+                <Label>Selected Location</Label>
+                <p className="text-sm text-muted-foreground">
+                  {selectedAddress}
                 </p>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div className="space-y-1">
-              <Label htmlFor="businessName">Business Name</Label>
-              <Input
-                id="businessName"
-                {...register("businessName")}
-                className={errors.businessName ? "border-destructive" : ""}
-              />
-              {errors.businessName && (
-                <p className="text-sm text-destructive">
-                  {errors.businessName.message}
-                </p>
-              )}
-            </div>
+            <Button
+              type="submit"
+              className="w-full bg-web-orange hover:bg-web-orange/90 text-white mt-4"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Request"}
+            </Button>
+          </form>
+        </Card>
 
-            <div className="space-y-1">
-              <Label htmlFor="contactEmail">Contact Email</Label>
-              <Input
-                id="contactEmail"
-                type="email"
-                {...register("contactEmail")}
-                className={errors.contactEmail ? "border-destructive" : ""}
-              />
-              {errors.contactEmail && (
-                <p className="text-sm text-destructive">
-                  {errors.contactEmail.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="siteName">Site Name</Label>
-              <Input
-                id="siteName"
-                {...register("siteName")}
-                className={errors.siteName ? "border-destructive" : ""}
-              />
-              {errors.siteName && (
-                <p className="text-sm text-destructive">
-                  {errors.siteName.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {selectedAddress && (
-            <div className="space-y-1 mt-4">
-              <Label>Selected Location</Label>
-              <p className="text-sm text-muted-foreground">{selectedAddress}</p>
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            className="w-full bg-web-orange hover:bg-web-orange/90 text-white mt-4"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Request"}
-          </Button>
-        </form>
-      </Card>
-
-      {/* Map - Below form on small/medium screens, right side on desktop */}
-      <div className="flex-1 h-full min-h-[500px]">
-        <SiteMap
-          onLocationSelect={handleLocationSelect}
-          onPolygonComplete={handlePolygonComplete}
-          selectedLocation={selectedLocation}
-          polygonPath={polygonPath}
-        />
+        {/* Map - Takes 2 columns */}
+        <div className="lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
+          <SiteMap
+            onLocationSelect={handleLocationSelect}
+            onPolygonComplete={handlePolygonComplete}
+            selectedLocation={selectedLocation}
+            polygonPath={polygonPath}
+          />
+        </div>
       </div>
     </div>
   );
