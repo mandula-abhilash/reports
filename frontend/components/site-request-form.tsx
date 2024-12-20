@@ -92,9 +92,19 @@ export function SiteRequestForm() {
         New Site Assessment Request
       </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Form Card - Takes 1 column */}
-        <Card className="p-4 bg-background/95 backdrop-blur-sm border-2 h-[450px] lg:h-[calc(100vh-10rem)] lg:overflow-y-auto">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+        {/* Map - Takes 2 columns on desktop, full width on mobile */}
+        <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
+          <SiteMap
+            onLocationSelect={handleLocationSelect}
+            onPolygonComplete={handlePolygonComplete}
+            selectedLocation={selectedLocation}
+            polygonPath={polygonPath}
+          />
+        </div>
+
+        {/* Form Card - Takes 1 column on desktop, below map on mobile */}
+        <Card className="order-2 lg:order-1 p-4 bg-background/95 backdrop-blur-sm border-2 h-auto lg:h-[calc(100vh-10rem)] lg:overflow-y-auto">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div className="space-y-1">
@@ -173,16 +183,6 @@ export function SiteRequestForm() {
             </Button>
           </form>
         </Card>
-
-        {/* Map - Takes 2 columns */}
-        <div className="lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
-          <SiteMap
-            onLocationSelect={handleLocationSelect}
-            onPolygonComplete={handlePolygonComplete}
-            selectedLocation={selectedLocation}
-            polygonPath={polygonPath}
-          />
-        </div>
       </div>
     </div>
   );
