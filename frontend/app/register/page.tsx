@@ -56,7 +56,8 @@ export default function RegisterPage() {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: error.response?.data?.message || "Please try again later.",
+        description:
+          error.response?.data?.error?.details || "Please try again later.",
       });
     }
   };
