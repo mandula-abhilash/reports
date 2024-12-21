@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+import { MapControls } from "./site-map/map-controls";
+
 const libraries = ["places", "drawing"];
 
 const mapContainerStyle = {

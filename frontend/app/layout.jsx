@@ -3,6 +3,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
+import { AuthProvider } from "../contexts/auth-context";
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,

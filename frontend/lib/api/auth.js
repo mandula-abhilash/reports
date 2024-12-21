@@ -1,25 +1,18 @@
-import api from "@/services/axiosInstance";
+import api from "../../services/axiosInstance";
 
-export async function loginUser(credentials) {
+export async function login(credentials) {
   const response = await api.post("/api/auth/login", credentials);
-  // Extract user from the nested data structure
   return { user: response.data.data.user };
 }
 
-export async function registerUser(credentials) {
-  const response = await api.post("/api/auth/register", credentials);
-  return response.data;
-}
-
-export async function logoutUser() {
+export async function logout() {
   const response = await api.post("/api/auth/logout");
   return response.data;
 }
 
-export async function getCurrentUser() {
+export async function checkSession() {
   const response = await api.get("/api/auth/session");
-  // Handle the session response format
-  return { user: response.data.data?.user || null };
+  return response.data;
 }
 
 export async function verifyEmail(token) {

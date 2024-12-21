@@ -7,12 +7,13 @@ import {
   useEffect,
   useState,
 } from "react";
+
 import {
   checkSession,
   login as loginApi,
   logout as logoutApi,
-} from "@/services/auth";
-import { getWalletDetails } from "@/services/wallet";
+} from "@/lib/api/auth";
+import { getWalletBalance } from "@/lib/api/wallet";
 
 const defaultContext = {
   user: null,
@@ -36,7 +37,7 @@ export function AuthProvider({ children }) {
 
     try {
       setTokenLoading(true);
-      const walletData = await getWalletDetails();
+      const walletData = await getWalletBalance();
       if (walletData?.balance !== undefined) {
         setTokens(walletData.balance);
       }
