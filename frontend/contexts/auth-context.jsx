@@ -15,7 +15,7 @@ import {
   markBonusReceived,
 } from "@/lib/api/auth";
 import { creditWelcomeBonus, getWalletBalance } from "@/lib/api/wallet";
-import { useToast } from "@/components/ui/use-toast";
+import { WelcomeBonusModal } from "@/components/welcome-bonus-modal";
 
 const defaultContext = {
   user: null,
@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
   const [tokens, setTokens] = useState(0);
   const [loading, setLoading] = useState(true);
   const [tokenLoading, setTokenLoading] = useState(false);
-  const { toast } = useToast();
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const fetchTokens = useCallback(async () => {
     if (!user) return;
@@ -103,10 +103,7 @@ export function AuthProvider({ children }) {
             await creditWelcomeBonus();
             await markBonusReceived();
             await fetchTokens();
-            toast({
-              title: "Welcome Bonus",
-              description: "You've received 50 tokens as a welcome bonus!",
-            });
+            setShowWelcomeModal(true);
           } catch (error) {
             console.error("Failed to credit welcome bonus:", error);
           }
@@ -144,7 +141,15 @@ export function AuthProvider({ children }) {
     fetchTokens,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      <WelcomeBonusModal
+        open={showWelcomeModal}
+        onOpenChange={setShowWelcomeModal}
+      />
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
