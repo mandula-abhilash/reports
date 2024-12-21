@@ -102,6 +102,7 @@ export function AuthProvider({ children }) {
           try {
             await creditWelcomeBonus();
             await markBonusReceived();
+            await fetchTokens();
             toast({
               title: "Welcome Bonus",
               description: "You've received 50 tokens as a welcome bonus!",
@@ -109,6 +110,8 @@ export function AuthProvider({ children }) {
           } catch (error) {
             console.error("Failed to credit welcome bonus:", error);
           }
+        } else {
+          await fetchTokens();
         }
 
         return { user: response.user };
