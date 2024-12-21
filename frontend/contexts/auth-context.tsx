@@ -2,63 +2,55 @@
 
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
   ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 import { useRouter } from "next/navigation";
+
+import { AuthState, LoginCredentials, User } from "@/types/auth";
+import { getCurrentUser, loginUser, logoutUser } from "@/lib/api/auth";
+import { getWalletBalance } from "@/lib/api/wallet";
 import { useToast } from "@/components/ui/use-toast";
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  tokens: number;
-  loading: boolean;
-  tokenLoading: boolean;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
+interface AuthContextType extends AuthState {
+  login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   fetchTokens: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const initialState: AuthState = {
+  user: null,
+  tokens: 0,
+  loading: true,
+  tokenLoading: false,
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [tokens, setTokens] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [tokenLoading, setTokenLoading] = useState(false);
+  const [state, setState] = useState<AuthState>(initialState);
   const router = useRouter();
   const { toast } = useToast();
 
   const fetchTokens = useCallback(async () => {
-    if (!user) return;
+    if (!state.user) return;
 
     try {
-      setTokenLoading(true);
-      const response = await fetch("/api/wallet", {
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data?.balance !== undefined) {
-        setTokens(data.balance);
-      }
+      setState((prev) => ({ ...prev, tokenLoading: true }));
+      const { balance } = await getWalletBalance();
+      setState((prev) => ({ ...prev, tokens: balance }));
     } catch (error) {
       console.error("Failed to fetch tokens:", error);
     } finally {
-      setTokenLoading(false);
+      setState((prev) => ({ ...prev, tokenLoading: false }));
     }
-  }, [user]);
+  }, [state.user]);
 
   const clearAuthData = () => {
-    setUser(null);
-    setTokens(0);
+    setState((prev) => ({ ...prev, user: null, tokens: 0 }));
   };
 
   useEffect(() => {
@@ -66,13 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const checkAuth = async () => {
       try {
-        const response = await fetch("/api/auth/session", {
-          credentials: "include",
-        });
-        const data = await response.json();
-        
-        if (isMounted && data?.user) {
-          setUser(data.user);
+        const { user } = await getCurrentUser();
+
+        if (isMounted && user) {
+          setState((prev) => ({ ...prev, user }));
         } else if (isMounted) {
           clearAuthData();
         }
@@ -82,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } finally {
         if (isMounted) {
-          setLoading(false);
+          setState((prev) => ({ ...prev, loading: false }));
         }
       }
     };
@@ -95,28 +84,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (state.user) {
       fetchTokens();
     }
-  }, [user, fetchTokens]);
+  }, [state.user, fetchTokens]);
 
-  const login = async (credentials: { email: string; password: string }) => {
+  const login = async (credentials: LoginCredentials) => {
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+      const { user } = await loginUser(credentials);
+      if (!user) {
+        throw new Error("Login failed - No user data received");
       }
-
-      setUser(data.user);
-      router.push("/dashboard");
+      setState((prev) => ({ ...prev, user }));
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
@@ -129,10 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await logoutUser();
       clearAuthData();
       router.push("/login");
       toast({
@@ -151,10 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value = {
-    user,
-    tokens,
-    loading,
-    tokenLoading,
+    ...state,
     login,
     logout,
     fetchTokens,

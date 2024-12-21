@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 import { CirclePower, Coins, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,15 +28,18 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  // This would come from your auth context in a real app
-  const userTokens = 15;
-  const isLoggedIn =
-    pathname.startsWith("/dashboard") || pathname === "/pricing";
+  const { user, tokens, logout } = useAuth();
+  const isLoggedIn = !!user;
 
   const getActiveTab = () => {
     if (pathname.includes("/requests")) return "my-requests";
     if (pathname.includes("/profile")) return "profile";
     return "new-request";
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsOpen(false);
   };
 
   return (
@@ -64,7 +68,7 @@ export function Header() {
                     <Link href="/pricing">
                       <Button variant="outline" size="sm" className="space-x-2">
                         <Coins className="h-4 w-4" />
-                        <span>{userTokens} Tokens</span>
+                        <span>{tokens} Tokens</span>
                       </Button>
                     </Link>
                   </TooltipTrigger>
@@ -77,7 +81,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="rounded-full"
-                onClick={() => (window.location.href = "/login")}
+                onClick={handleLogout}
               >
                 <CirclePower className="h-6 w-6" />
                 <span className="sr-only">Logout</span>
@@ -125,13 +129,13 @@ export function Header() {
                         className="w-full justify-start space-x-2"
                       >
                         <Coins className="h-4 w-4" />
-                        <span>{userTokens} Tokens</span>
+                        <span>{tokens} Tokens</span>
                       </Button>
                     </Link>
                     <Button
                       variant="ghost"
                       className="justify-start"
-                      onClick={() => (window.location.href = "/login")}
+                      onClick={handleLogout}
                     >
                       <CirclePower className="h-5 w-5 mr-2" />
                       Logout
