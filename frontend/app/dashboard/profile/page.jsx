@@ -60,7 +60,7 @@ export default function ProfilePage() {
               </Link>
             </div>
             <p className="text-sm text-muted-foreground">
-              Each report requires 5 tokens to generate
+              Each report requires 50 tokens to generate
             </p>
           </CardContent>
         </Card>

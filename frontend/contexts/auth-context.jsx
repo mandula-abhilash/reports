@@ -101,8 +101,8 @@ export function AuthProvider({ children }) {
         if (!response.user.hasReceivedWelcomeBonus) {
           try {
             await creditWelcomeBonus();
-            await markBonusReceived();
             await fetchTokens();
+            await markBonusReceived();
             setShowWelcomeModal(true);
           } catch (error) {
             console.error("Failed to credit welcome bonus:", error);
@@ -146,7 +146,12 @@ export function AuthProvider({ children }) {
       {children}
       <WelcomeBonusModal
         open={showWelcomeModal}
-        onOpenChange={setShowWelcomeModal}
+        onOpenChange={(isOpen) => {
+          setShowWelcomeModal(isOpen);
+          if (!isOpen) {
+            fetchTokens();
+          }
+        }}
       />
     </AuthContext.Provider>
   );
