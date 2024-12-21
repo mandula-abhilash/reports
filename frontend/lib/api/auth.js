@@ -5,6 +5,11 @@ export async function login(credentials) {
   return { user: response.data.data.user };
 }
 
+export async function registerUser(credentials) {
+  const response = await api.post("/api/auth/register", credentials);
+  return { user: response.data.data.user };
+}
+
 export async function logout() {
   const response = await api.post("/api/auth/logout");
   return response.data;
@@ -16,6 +21,6 @@ export async function checkSession() {
 }
 
 export async function verifyEmail(token) {
-  const response = await api.post(`/api/auth/verify-email`, { token });
+  const response = await api.get(`/api/auth/verify-email?token=${token}`);
   return response.data;
 }

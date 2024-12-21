@@ -13,7 +13,7 @@ import {
   login as loginApi,
   logout as logoutApi,
 } from "@/lib/api/auth";
-import { getWalletBalance } from "@/lib/api/wallet";
+import { creditWelcomeBonus, getWalletBalance } from "@/lib/api/wallet";
 
 const defaultContext = {
   user: null,
@@ -95,6 +95,20 @@ export function AuthProvider({ children }) {
       const response = await loginApi(credentials);
       if (response?.user) {
         setUser(response.user);
+
+        // Check if this is their first login
+        if (!response.user.hasReceivedWelcomeBonus) {
+          try {
+            await creditWelcomeBonus();
+            toast({
+              title: "Welcome Bonus",
+              description: "You've received 50 tokens as a welcome bonus!",
+            });
+          } catch (error) {
+            console.error("Failed to credit welcome bonus:", error);
+          }
+        }
+
         return { user: response.user };
       } else {
         throw new Error("Login failed");

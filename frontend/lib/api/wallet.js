@@ -8,7 +8,9 @@ export async function getWalletBalance() {
 export async function creditWelcomeBonus() {
   const response = await api.post("/api/wallet/credit", {
     amount: 50,
-    description: "Welcome bonus tokens",
+    currency: "GBP",
+    paymentGateway: "system",
+    type: "wallet-recharge",
   });
   return response.data;
 }

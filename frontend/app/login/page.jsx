@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { useForm } from "react-hook-form";
 
@@ -19,7 +19,6 @@ const loginSchema = {
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login } = useAuth();
 
   const {

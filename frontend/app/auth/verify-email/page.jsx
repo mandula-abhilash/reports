@@ -2,15 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 import { verifyEmail } from "@/lib/api/auth";
-import { creditWelcomeBonus } from "@/lib/api/wallet";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { useToast } from "@/components/ui/use-toast";
 import { MainLayout } from "@/components/layout/main-layout";
 
 export default function VerifyEmailPage() {
@@ -19,8 +16,6 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
   const verificationAttempted = useRef(false);
-  const { login } = useAuth();
-  const { toast } = useToast();
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -35,33 +30,9 @@ export default function VerifyEmailPage() {
 
       const verifyToken = async () => {
         try {
-          const response = await verifyEmail(token);
-
-          // Auto-login the user
-          if (response.credentials) {
-            await login(response.credentials);
-
-            // Credit welcome bonus
-            try {
-              await creditWelcomeBonus();
-              toast({
-                title: "Welcome Bonus",
-                description: "You've received 50 tokens as a welcome bonus!",
-              });
-            } catch (error) {
-              console.error("Failed to credit welcome bonus:", error);
-            }
-
-            setStatus("success");
-            setMessage(
-              "Email verified successfully! Redirecting to dashboard..."
-            );
-
-            // Redirect to dashboard after a short delay
-            setTimeout(() => {
-              router.push("/dashboard");
-            }, 2000);
-          }
+          await verifyEmail(token);
+          setStatus("success");
+          setMessage("Email verified successfully! Please log in to continue.");
         } catch (error) {
           setStatus("error");
           setMessage(
@@ -72,7 +43,7 @@ export default function VerifyEmailPage() {
 
       verifyToken();
     }
-  }, [searchParams, router, login, toast]);
+  }, [searchParams]);
 
   return (
     <MainLayout>
@@ -97,7 +68,7 @@ export default function VerifyEmailPage() {
 
             <p className="text-muted-foreground">{message}</p>
 
-            {status === "error" && (
+            {status !== "loading" && (
               <Button
                 onClick={() => router.push("/login")}
                 className="bg-web-orange hover:bg-web-orange/90 text-white"
