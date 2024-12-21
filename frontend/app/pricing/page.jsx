@@ -1,7 +1,30 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+
 import { MainLayout } from "@/components/layout/main-layout";
 import { PricingCards } from "@/components/pricing/pricing-cards";
 
 export default function PricingPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <MainLayout>
       <div className="px-4 md:px-8 py-12">

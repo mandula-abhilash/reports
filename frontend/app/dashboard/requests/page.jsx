@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 import { Download, ExternalLink, FileText } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +37,23 @@ const dummyRequests = [
 ];
 
 export default function RequestsPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [requests] = useState(dummyRequests);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const getStatusColor = (status) => {
     switch (status) {

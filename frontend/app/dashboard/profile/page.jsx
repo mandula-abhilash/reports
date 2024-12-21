@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 import { Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +18,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function ProfilePage() {
-  const userTokens = 15; // This would come from your auth context
-  // TODO : Move this to context
+  const { user, tokens, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
@@ -33,7 +51,7 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Coins className="h-5 w-5 text-web-orange" />
-                <span className="text-2xl font-bold">{userTokens} Tokens</span>
+                <span className="text-2xl font-bold">{tokens} Tokens</span>
               </div>
               <Link href="/pricing">
                 <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
@@ -56,11 +74,11 @@ export default function ProfilePage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" defaultValue="John Doe" />
+              <Input id="name" defaultValue={user.name} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" defaultValue="john@example.com" />
+              <Input id="email" type="email" defaultValue={user.email} />
             </div>
             <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
               Save Changes
