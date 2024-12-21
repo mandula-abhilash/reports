@@ -14,6 +14,7 @@ import {
   logout as logoutApi,
 } from "@/lib/api/auth";
 import { creditWelcomeBonus, getWalletBalance } from "@/lib/api/wallet";
+import { useToast } from "@/components/ui/use-toast";
 
 const defaultContext = {
   user: null,
@@ -31,6 +32,7 @@ export function AuthProvider({ children }) {
   const [tokens, setTokens] = useState(0);
   const [loading, setLoading] = useState(true);
   const [tokenLoading, setTokenLoading] = useState(false);
+  const { toast } = useToast();
 
   const fetchTokens = useCallback(async () => {
     if (!user) return;
@@ -83,7 +85,6 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  // Separate useEffect for fetching tokens when user changes
   useEffect(() => {
     if (user) {
       fetchTokens();
@@ -96,7 +97,6 @@ export function AuthProvider({ children }) {
       if (response?.user) {
         setUser(response.user);
 
-        // Check if this is their first login
         if (!response.user.hasReceivedWelcomeBonus) {
           try {
             await creditWelcomeBonus();
