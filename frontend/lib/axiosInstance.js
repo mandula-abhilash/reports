@@ -15,7 +15,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // Exclude certain endpoints from interceptor logic
-    const excludedUrls = ["/api/auth/refresh-token", "/api/auth/session"];
+    const excludedUrls = [
+      "/api/auth/refresh-token",
+      "/api/auth/session",
+      "/api/auth/login",
+    ];
     if (
       excludedUrls.some((url) => originalRequest.url.includes(url)) ||
       originalRequest._retry
@@ -29,7 +33,10 @@ api.interceptors.response.use(
         await api.post("/api/auth/refresh-token");
         return api(originalRequest);
       } catch (refreshError) {
-        if (typeof window !== "undefined") {
+        if (
+          typeof window !== "undefined" &&
+          !originalRequest.url.includes("/api/auth/")
+        ) {
           window.location.href = "/";
         }
         return Promise.reject(refreshError);
