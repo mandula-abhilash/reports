@@ -24,3 +24,8 @@ export async function verifyEmail(token) {
   const response = await api.get(`/api/auth/verify-email?token=${token}`);
   return response.data;
 }
+
+export async function markBonusReceived() {
+  const response = await api.patch("/api/auth/user/bonus");
+  return response.data;
+}

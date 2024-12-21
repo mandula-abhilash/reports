@@ -12,6 +12,7 @@ import {
   checkSession,
   login as loginApi,
   logout as logoutApi,
+  markBonusReceived,
 } from "@/lib/api/auth";
 import { creditWelcomeBonus, getWalletBalance } from "@/lib/api/wallet";
 import { useToast } from "@/components/ui/use-toast";
@@ -100,6 +101,7 @@ export function AuthProvider({ children }) {
         if (!response.user.hasReceivedWelcomeBonus) {
           try {
             await creditWelcomeBonus();
+            await markBonusReceived();
             toast({
               title: "Welcome Bonus",
               description: "You've received 50 tokens as a welcome bonus!",
