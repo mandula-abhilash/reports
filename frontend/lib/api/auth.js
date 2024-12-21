@@ -1,4 +1,4 @@
-import api from "../../services/axiosInstance";
+import api from "../axiosInstance";
 
 export async function login(credentials) {
   const response = await api.post("/api/auth/login", credentials);
@@ -16,6 +16,6 @@ export async function checkSession() {
 }
 
 export async function verifyEmail(token) {
-  const response = await api.get(`/api/auth/verify-email?token=${token}`);
+  const response = await api.post(`/api/auth/verify-email`, { token });
   return response.data;
 }
