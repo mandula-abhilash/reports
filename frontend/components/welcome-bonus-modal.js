@@ -15,10 +15,10 @@ export function WelcomeBonusModal({ open, onOpenChange }) {
   if (!open) return null;
 
   return (
-    <>
+    <div className="relative">
       <Confetti />
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" style={{ zIndex: 101 }}>
           <DialogHeader>
             <DialogTitle className="text-center text-2xl flex items-center justify-center gap-2">
               <Coins className="h-6 w-6 text-web-orange" />
@@ -38,6 +38,6 @@ export function WelcomeBonusModal({ open, onOpenChange }) {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
