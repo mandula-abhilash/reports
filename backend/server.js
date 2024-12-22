@@ -18,7 +18,7 @@ const startServer = async () => {
       origin: process.env.CLIENT_URL,
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+      allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
       exposedHeaders: ["set-cookie"],
     })
   );
@@ -34,8 +34,7 @@ const startServer = async () => {
         secure: true,
         httpOnly: true,
         sameSite: "strict",
-        domain:
-          process.env.NODE_ENV === "production" ? ".fgbacumen.com" : undefined,
+        domain: process.env.COOKIE_DOMAIN || undefined,
       });
     };
     next();
