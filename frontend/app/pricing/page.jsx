@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 
+import { Spinner } from "@/components/ui/spinner";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PricingCards } from "@/components/pricing/pricing-cards";
 
@@ -18,7 +19,13 @@ export default function PricingPage() {
   }, [loading, user, router]);
 
   if (loading) {
-    return null;
+    return (
+      <MainLayout>
+        <div className="h-full w-full flex items-center justify-center py-12">
+          <Spinner size="lg" className="text-web-orange" />
+        </div>
+      </MainLayout>
+    );
   }
 
   if (!user) {

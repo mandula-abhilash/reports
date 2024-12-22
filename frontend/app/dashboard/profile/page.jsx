@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function ProfilePage() {
   const { user, tokens, loading } = useAuth();
@@ -28,7 +29,11 @@ export default function ProfilePage() {
   }, [loading, user, router]);
 
   if (loading) {
-    return null;
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Spinner size="lg" className="text-web-orange" />
+      </div>
+    );
   }
 
   if (!user) {

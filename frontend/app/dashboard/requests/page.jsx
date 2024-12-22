@@ -9,6 +9,7 @@ import { Download, ExternalLink, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 // Dummy data
 const dummyRequests = [
@@ -48,7 +49,11 @@ export default function RequestsPage() {
   }, [loading, user, router]);
 
   if (loading) {
-    return null;
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Spinner size="lg" className="text-web-orange" />
+      </div>
+    );
   }
 
   if (!user) {

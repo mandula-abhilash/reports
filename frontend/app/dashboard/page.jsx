@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 
+import { Spinner } from "@/components/ui/spinner";
 import { SiteRequestForm } from "@/components/site-request-form";
 
 export default function DashboardPage() {
@@ -17,7 +18,11 @@ export default function DashboardPage() {
   }, [loading, user, router]);
 
   if (loading) {
-    return null;
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Spinner size="lg" className="text-web-orange" />
+      </div>
+    );
   }
 
   if (!user) {
