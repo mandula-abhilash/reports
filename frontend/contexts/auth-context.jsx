@@ -32,17 +32,22 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [tokens, setTokens] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [tokenLoading, setTokenLoading] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const fetchTokens = useCallback(async () => {
     if (!user) return;
+
     try {
+      setTokenLoading(true);
       const walletData = await getWalletBalance();
       if (walletData?.balance !== undefined) {
         setTokens(walletData.balance);
       }
     } catch (error) {
       console.error("Failed to fetch tokens:", error);
+    } finally {
+      setTokenLoading(false);
     }
   }, [user]);
 
@@ -52,26 +57,40 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkAuth = async () => {
       try {
         const response = await checkSession();
         const userData = response?.data?.user;
-        if (userData) {
+        if (isMounted && userData) {
           setUser(userData);
-          const walletData = await getWalletBalance();
-          setTokens(walletData?.balance || 0);
-        } else {
+        } else if (isMounted) {
           clearAuthData();
         }
       } catch (error) {
-        clearAuthData();
+        if (isMounted) {
+          clearAuthData();
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchTokens();
+    }
+  }, [user, fetchTokens]);
 
   const login = async (credentials) => {
     try {
@@ -79,26 +98,23 @@ export function AuthProvider({ children }) {
       if (response?.user) {
         setUser(response.user);
 
-        // Get initial token balance
-        const walletData = await getWalletBalance();
-        setTokens(walletData?.balance || 0);
-
         if (!response.user.hasReceivedWelcomeBonus) {
           try {
             await creditWelcomeBonus();
+            await fetchTokens();
             await markBonusReceived();
-            // Update tokens after welcome bonus
-            const updatedWallet = await getWalletBalance();
-            setTokens(updatedWallet?.balance || 0);
             setShowWelcomeModal(true);
           } catch (error) {
             console.error("Failed to credit welcome bonus:", error);
           }
+        } else {
+          await fetchTokens();
         }
 
         return { user: response.user };
+      } else {
+        throw new Error("Login failed");
       }
-      throw new Error("Login failed");
     } catch (error) {
       clearAuthData();
       throw error;
@@ -108,9 +124,9 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await logoutApi();
+      clearAuthData();
     } catch (error) {
       console.error("Logout failed:", error);
-    } finally {
       clearAuthData();
     }
   };
@@ -119,6 +135,7 @@ export function AuthProvider({ children }) {
     user,
     tokens,
     loading,
+    tokenLoading,
     login,
     logout,
     fetchTokens,
@@ -129,7 +146,12 @@ export function AuthProvider({ children }) {
       {children}
       <WelcomeBonusModal
         open={showWelcomeModal}
-        onOpenChange={setShowWelcomeModal}
+        onOpenChange={(isOpen) => {
+          setShowWelcomeModal(isOpen);
+          if (!isOpen) {
+            fetchTokens();
+          }
+        }}
       />
     </AuthContext.Provider>
   );
