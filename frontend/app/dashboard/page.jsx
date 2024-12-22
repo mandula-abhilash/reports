@@ -7,6 +7,9 @@ import { useAuth } from "@/contexts/auth-context";
 import { Spinner } from "@/components/ui/spinner";
 import { SiteRequestForm } from "@/components/site-request-form";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function DashboardPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
