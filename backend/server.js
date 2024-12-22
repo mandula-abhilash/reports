@@ -28,7 +28,7 @@ const startServer = async () => {
 
   // Configure cookie settings middleware
   app.use((req, res, next) => {
-    res.setSecureCookie = function (name, value, options) {
+    res.cookie = function (name, value, options = {}) {
       return res.cookie(name, value, {
         ...options,
         secure: true,
