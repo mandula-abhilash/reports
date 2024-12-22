@@ -7,6 +7,7 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
+  credentials: "include",
 });
 
 api.interceptors.response.use(
@@ -37,7 +38,7 @@ api.interceptors.response.use(
           typeof window !== "undefined" &&
           !originalRequest.url.includes("/api/auth/")
         ) {
-          window.location.href = "/";
+          window.location.href = "/login";
         }
         return Promise.reject(refreshError);
       }

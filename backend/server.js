@@ -12,9 +12,35 @@ import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
 const startServer = async () => {
   const app = express();
 
-  // Middleware
-  app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+  // CORS configuration
+  app.use(
+    cors({
+      origin: process.env.CLIENT_URL,
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      exposedHeaders: ["set-cookie"],
+    })
+  );
+
+  // Cookie settings
   app.use(cookieParser());
+
+  // Configure cookie settings middleware
+  app.use((req, res, next) => {
+    res.cookie = function (name, value, options) {
+      return res.cookie(name, value, {
+        ...options,
+        secure: true,
+        httpOnly: true,
+        sameSite: "strict",
+        domain:
+          process.env.NODE_ENV === "production" ? ".fgbacumen.com" : undefined,
+      });
+    };
+    next();
+  });
+
   app.use(helmet()); // Security headers
   app.use(compression()); // GZIP compression
 
@@ -33,7 +59,7 @@ const startServer = async () => {
   app.use(morgan("combined")); // Logging HTTP requests
 
   // Trust proxy for Nginx or other reverse proxies
-  app.set("trust proxy", true);
+  app.set("trust proxy", 1);
 
   try {
     // Initialize the visdak-sesam auth module
