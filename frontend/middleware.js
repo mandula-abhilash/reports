@@ -15,7 +15,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Get the token from the session cookie
-  const sessionCookie = request.cookies.get("session");
+  const sessionCookie = request.cookies.get("accessToken");
   const isAuthenticated = !!sessionCookie;
 
   // Check if the requested path is a protected route
