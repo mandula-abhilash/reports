@@ -9,6 +9,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Response interceptor for handling errors and token refresh logic
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -21,30 +22,26 @@ api.interceptors.response.use(
       "/api/auth/login",
     ];
     if (
+      !originalRequest.url ||
       excludedUrls.some((url) => originalRequest.url.includes(url)) ||
       originalRequest._retry
     ) {
       return Promise.reject(error);
     }
 
-    // When a 401 error occurs:
+    // Handle 401 errors (unauthorized)
     if (error.response && error.response.status === 401) {
       originalRequest._retry = true;
       try {
-        // 1. First try to get a new access token using the refresh token
+        // Attempt to refresh the token
         await api.post("/api/auth/refresh-token");
 
-        // 2. After getting new tokens, retry the original failed request
+        // Retry the original request
         const response = await api(originalRequest);
-
-        // 3. Return the response from the retried request
         return response;
       } catch (refreshError) {
-        // If refresh token fails, redirect to login
-        if (
-          typeof window !== "undefined" &&
-          !originalRequest.url.includes("/api/auth/")
-        ) {
+        // If refreshing fails, redirect to login
+        if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
         return Promise.reject(refreshError);
