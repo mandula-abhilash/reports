@@ -27,18 +27,18 @@ const startServer = async () => {
   app.use(cookieParser());
 
   // Configure cookie settings middleware
-  app.use((req, res, next) => {
-    res.cookie = function (name, value, options = {}) {
-      return res.cookie(name, value, {
-        ...options,
-        secure: true,
-        httpOnly: true,
-        sameSite: "strict",
-        domain: process.env.COOKIE_DOMAIN || undefined,
-      });
-    };
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   res.cookie = function (name, value, options = {}) {
+  //     return res.cookie(name, value, {
+  //       ...options,
+  //       secure: true,
+  //       httpOnly: true,
+  //       sameSite: "strict",
+  //       domain: process.env.COOKIE_DOMAIN || undefined,
+  //     });
+  //   };
+  //   next();
+  // });
 
   app.use(helmet()); // Security headers
   app.use(compression()); // GZIP compression
