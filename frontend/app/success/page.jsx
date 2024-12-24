@@ -1,18 +1,24 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-import { PaymentVerification } from "@/components/checkout/payment-verification";
+import { Spinner } from "@/components/ui/spinner";
 import { MainLayout } from "@/components/layout/main-layout";
+import { SuccessContent } from "@/components/success/success-content";
 
 export default function SuccessPage() {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
-
   return (
     <MainLayout>
       <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center p-4">
-        <PaymentVerification sessionId={sessionId} />
+        <Suspense
+          fallback={
+            <div className="w-full max-w-md flex items-center justify-center">
+              <Spinner size="lg" className="text-web-orange" />
+            </div>
+          }
+        >
+          <SuccessContent />
+        </Suspense>
       </div>
     </MainLayout>
   );
