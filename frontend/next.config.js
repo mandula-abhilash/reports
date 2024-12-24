@@ -13,7 +13,6 @@ const nextConfig = {
     ],
   },
   async headers() {
-    // Base connect-src directive for production
     const connectSrc = [
       "'self'",
       "https://maps.googleapis.com",
@@ -24,7 +23,6 @@ const nextConfig = {
       "https://m.stripe.network",
     ];
 
-    // Add localhost only in development
     if (process.env.NODE_ENV === "development") {
       connectSrc.push("http://localhost:*");
     }
@@ -37,22 +35,25 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self' wss://*.fgbacumen.com https://api.ipify.org;
-              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://maps.googleapis.com https://maps.gstatic.com https://khms0.googleapis.com https://khms1.googleapis.com https://api.maptiler.com https://api.os.uk https://khm.google.com https://khm0.google.com https://khm1.google.com https://khms0.google.com https://khms1.google.com https://khms2.google.com https://khms3.google.com https://geo0.ggpht.com https://geo1.ggpht.com https://geo2.ggpht.com https://geo3.ggpht.com https://lh3.ggpht.com https://lh4.ggpht.com https://lh5.ggpht.com https://lh6.ggpht.com https://streetviewpixels-pa.googleapis.com https://developers.google.com https://tile.googleapis.com https://tile.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org https://maps.google.com/mapfiles/ms/icons/blue-dot.png;
-              script-src 'unsafe-eval' 'unsafe-inline' 'self' https://js.stripe.com https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com https://clients.l.google.com https://maps.l.google.com https://mt.l.google.com https://khm.l.google.com https://csi.gstatic.com https://js.stripe.com https://m.stripe.network;
-              style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
-              font-src 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com;
+              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com;
+              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
+              font-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com;
               connect-src ${connectSrc.join(" ")};
-              frame-src 'self' https://js.stripe.com https://maps.googleapis.com https://m.stripe.network;
+              frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://maps.googleapis.com https://m.stripe.network;
               worker-src 'self' blob:;
               child-src blob:;
               object-src 'none';
               base-uri 'self';
               form-action 'self';
-              frame-ancestors 'none';
               upgrade-insecure-requests;
             `
               .replace(/\s{2,}/g, " ")
               .trim(),
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
           },
           {
             key: "X-Content-Type-Options",
@@ -60,31 +61,11 @@ const nextConfig = {
           },
           {
             key: "X-Frame-Options",
-            value: "sameorigin",
+            value: "DENY",
           },
           {
             key: "X-XSS-Protection",
             value: "1; mode=block",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "same-origin",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "autoplay=(), camera=(), microphone=()",
-          },
-          {
-            key: "Set-Cookie",
-            value: "__cf_bm=*; Secure; SameSite=Strict; Partitioned;",
-          },
-          {
-            key: "Set-Cookie",
-            value: "_cfuvid=*; Secure; SameSite=Strict; Partitioned;",
           },
         ],
       },
