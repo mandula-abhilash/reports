@@ -15,7 +15,18 @@ export async function createCheckoutSession(planData) {
 export async function verifyPaymentSession(sessionId) {
   try {
     const response = await api.get(`/api/checkout/verify/${sessionId}`);
-    return response.data;
+
+    const { status, paymentStatus, metadata } = response.data;
+
+    return {
+      status,
+      paymentStatus,
+      plan: {
+        tokens: parseInt(metadata?.tokens || 0),
+        name: metadata?.name || "",
+        type: metadata?.type || "",
+      },
+    };
   } catch (error) {
     console.error("Error verifying payment session:", error);
     throw new Error(

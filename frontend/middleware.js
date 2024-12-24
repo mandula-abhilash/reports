@@ -6,6 +6,8 @@ const protectedRoutes = [
   "/dashboard/requests",
   "/dashboard/profile",
   "/pricing",
+  "/success",
+  "/cancel",
 ];
 
 // List of auth routes (login/register pages)
