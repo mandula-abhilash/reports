@@ -20,7 +20,9 @@ const nextConfig = {
       "https://googleapis.l.google.com",
       "https://tile.googleapis.com",
       "https://api.stripe.com",
+      "https://checkout.stripe.com",
       "https://m.stripe.network",
+      "https://reports.fgbacumen.com",
     ];
 
     if (process.env.NODE_ENV === "development") {

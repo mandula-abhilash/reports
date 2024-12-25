@@ -5,6 +5,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Check, Coins, Loader2 } from "lucide-react";
 
 import { getActivePlans } from "@/lib/api/plans";
+import { createCheckoutSession } from "@/lib/api/stripe";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -79,23 +80,12 @@ export function PricingCards() {
         throw new Error("Stripe is not properly configured");
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/checkout/session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            planId: plan._id,
-            paymentGateway: "stripe",
-            quantity: 1,
-          }),
-          credentials: "include",
-        }
-      );
+      const { sessionId } = await createCheckoutSession({
+        planId: plan._id,
+        paymentGateway: "stripe",
+        quantity: 1,
+      });
 
-      const { sessionId } = await response.json();
       const stripe = await stripePromise;
 
       if (!stripe) {
