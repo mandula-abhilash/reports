@@ -36,13 +36,13 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: `
-              default-src 'self';
+              default-src 'self' wss://*.fgbacumen.com https://api.ipify.org;
               img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com;
-              script-src 'self' https://js.stripe.com https://m.stripe.network https://maps.googleapis.com;
-              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-              font-src 'self' https://fonts.gstatic.com;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com;
+              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
+              font-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com;
               connect-src ${connectSrc.join(" ")};
-              frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://maps.googleapis.com;
+              frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://maps.googleapis.com https://m.stripe.network;
               worker-src 'self' blob:;
               child-src blob:;
               object-src 'none';
