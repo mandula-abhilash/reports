@@ -2,7 +2,6 @@
 
 import { Coins } from "lucide-react";
 
-import { Confetti } from "@/components/ui/confetti";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +15,6 @@ export function WelcomeBonusModal({ open, onOpenChange }) {
 
   return (
     <div className="relative">
-      <Confetti />
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md" style={{ zIndex: 101 }}>
           <DialogHeader>

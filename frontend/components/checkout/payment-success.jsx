@@ -5,12 +5,10 @@ import { CheckCircle2, Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Confetti } from "@/components/ui/confetti";
 
 export function PaymentSuccess({ plan }) {
   return (
     <div className="relative">
-      <Confetti />
       <Card className="w-full max-w-md p-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <CheckCircle2 className="h-16 w-16 text-green-500" />
