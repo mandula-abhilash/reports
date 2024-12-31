@@ -33,7 +33,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/50"></div>
       </div>
 
-      <div className="container px-4 md:px-6 relative">
+      <div className="px-4 md:px-6 relative">
         <div className="max-w-[800px] mx-auto text-center space-y-8">
           <motion.div
             initial="hidden"
@@ -50,7 +50,7 @@ export function HeroSection() {
             className="space-y-6"
           >
             <motion.div variants={fadeIn} className="inline-block">
-              <div className="inline-flex items-center font-semibold shadow-md rounded-full border px-6 py-2 text-md bg-background/60 backdrop-blur-sm">
+              <div className="inline-flex items-center font-semibold shadow-md rounded-full border px-6 py-2 mt-8 md:mt-0 text-md bg-background/60 backdrop-blur-sm">
                 <span className="text-web-orange">Professional</span>
                 <div className="mx-2 h-4 w-[1px] bg-muted-foreground/20"></div>
                 <span className="text-havelock-blue">Reliable</span>

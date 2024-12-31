@@ -37,11 +37,11 @@ export function SiteRequestForm() {
 
   const onSubmit = async (data) => {
     try {
-      if (!selectedLocation || polygonPath.length < 3) {
+      if (!selectedLocation || !selectedAddress) {
         toast({
           variant: "destructive",
-          title: "Validation Error",
-          description: "Please select a location and draw the site boundary.",
+          title: "Location Required",
+          description: "Please select a site location using the map.",
         });
         return;
       }
@@ -53,16 +53,23 @@ export function SiteRequestForm() {
         boundary: polygonPath,
       };
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Log the form data
+      console.log("Assessment Request Data:", requestData);
 
       toast({
         title: "Request Submitted",
         description:
-          "Your site assessment request has been submitted successfully.",
+          "Your site assessment request has been logged successfully.",
       });
 
-      router.push("/dashboard/confirmation");
+      // Clear form and map selections
+      setSelectedLocation(null);
+      setSelectedAddress("");
+      setPolygonPath([]);
+
+      router.push("/dashboard/requests");
     } catch (error) {
+      console.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Submission Failed",
@@ -82,27 +89,17 @@ export function SiteRequestForm() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold uppercase">
-        New Site Assessment Request
-      </h2>
+      <h2 className="text-2xl font-bold">New Site Assessment Request</h2>
 
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
-        {/* Map - Takes 2 columns on desktop, full width on mobile */}
-        <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
-          <SiteMap
-            onLocationSelect={handleLocationSelect}
-            onPolygonComplete={handlePolygonComplete}
-            selectedLocation={selectedLocation}
-            polygonPath={polygonPath}
-          />
-        </div>
-
-        {/* Form Card - Takes 1 column on desktop, below map on mobile */}
-        <Card className="order-2 lg:order-1 p-4 bg-background/95 backdrop-blur-sm border-2 h-auto lg:h-[calc(100vh-10rem)] lg:overflow-y-auto">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Form Card - Takes 1 column on desktop */}
+        <Card className="order-2 lg:order-1 p-6 bg-background/95 backdrop-blur-sm border-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
-              <div className="space-y-1">
-                <Label htmlFor="name">Full Name</Label>
+              <div className="space-y-2">
+                <Label htmlFor="name">
+                  Full Name <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="name"
                   {...register("name")}
@@ -115,8 +112,10 @@ export function SiteRequestForm() {
                 )}
               </div>
 
-              <div className="space-y-1">
-                <Label htmlFor="businessName">Business Name</Label>
+              <div className="space-y-2">
+                <Label htmlFor="businessName">
+                  Business Name <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="businessName"
                   {...register("businessName")}
@@ -129,8 +128,10 @@ export function SiteRequestForm() {
                 )}
               </div>
 
-              <div className="space-y-1">
-                <Label htmlFor="contactEmail">Contact Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="contactEmail">
+                  Contact Email <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="contactEmail"
                   type="email"
@@ -144,8 +145,10 @@ export function SiteRequestForm() {
                 )}
               </div>
 
-              <div className="space-y-1">
-                <Label htmlFor="siteName">Site Name</Label>
+              <div className="space-y-2">
+                <Label htmlFor="siteName">
+                  Site Name <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="siteName"
                   {...register("siteName")}
@@ -157,26 +160,47 @@ export function SiteRequestForm() {
                   </p>
                 )}
               </div>
-            </div>
 
-            {selectedAddress && (
-              <div className="space-y-1 mt-4">
-                <Label>Selected Location</Label>
-                <p className="text-sm text-muted-foreground">
-                  {selectedAddress}
-                </p>
+              {selectedAddress && (
+                <div className="space-y-2">
+                  <Label>Selected Location</Label>
+                  <p className="text-sm text-muted-foreground break-words">
+                    {selectedAddress}
+                  </p>
+                </div>
+              )}
+
+              {polygonPath.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Site Boundary</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Boundary area drawn on map
+                  </p>
+                </div>
+              )}
+
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Request"}
+                </Button>
               </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full bg-web-orange hover:bg-web-orange/90 text-white mt-4"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Request"}
-            </Button>
+            </div>
           </form>
         </Card>
+
+        {/* Map - Takes 2 columns on desktop */}
+        <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
+          <SiteMap
+            onLocationSelect={handleLocationSelect}
+            onPolygonComplete={handlePolygonComplete}
+            selectedLocation={selectedLocation}
+            polygonPath={polygonPath}
+          />
+        </div>
       </div>
     </div>
   );
