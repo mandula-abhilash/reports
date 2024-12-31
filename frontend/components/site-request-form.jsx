@@ -17,7 +17,7 @@ const siteRequestSchema = z.object({
   name: z.string().min(1, "Name is required"),
   businessName: z.string().min(1, "Business name is required"),
   contactEmail: z.string().email("Please enter a valid email address"),
-  siteName: z.string().min(1, "Site name is required"),
+  siteName: z.string().optional(),
 });
 
 export function SiteRequestForm() {
@@ -48,12 +48,12 @@ export function SiteRequestForm() {
 
       const requestData = {
         ...data,
+        siteName: data.siteName || selectedAddress, // Use provided site name or fall back to address
         siteLocation: selectedAddress,
         coordinates: selectedLocation,
         boundary: polygonPath,
       };
 
-      // Log the form data
       console.log("Assessment Request Data:", requestData);
 
       toast({
@@ -62,10 +62,9 @@ export function SiteRequestForm() {
           "Your site assessment request has been logged successfully.",
       });
 
-      // Clear form and map selections
-      setSelectedLocation(null);
-      setSelectedAddress("");
-      setPolygonPath([]);
+      // setSelectedLocation(null);
+      // setSelectedAddress("");
+      // setPolygonPath([]);
 
       router.push("/dashboard/requests");
     } catch (error) {
@@ -146,36 +145,34 @@ export function SiteRequestForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="siteName">
-                  Site Name <span className="text-destructive">*</span>
-                </Label>
+                <Label htmlFor="siteName">Site Name & Location</Label>
                 <Input
                   id="siteName"
+                  placeholder="Enter a name for this site (optional)"
                   {...register("siteName")}
                   className={errors.siteName ? "border-destructive" : ""}
                 />
-                {errors.siteName && (
-                  <p className="text-sm text-destructive">
-                    {errors.siteName.message}
-                  </p>
+                {selectedAddress ? (
+                  <div className="mt-2 p-3 rounded-md border bg-muted/50">
+                    <p className="text-sm break-words">{selectedAddress}</p>
+                  </div>
+                ) : (
+                  <div className="mt-2 p-3 rounded-md border border-destructive/50 bg-destructive/10">
+                    <p className="text-sm text-destructive">
+                      Please search for or select a location on the map
+                    </p>
+                  </div>
                 )}
               </div>
-
-              {selectedAddress && (
-                <div className="space-y-2">
-                  <Label>Selected Location</Label>
-                  <p className="text-sm text-muted-foreground break-words">
-                    {selectedAddress}
-                  </p>
-                </div>
-              )}
 
               {polygonPath.length > 0 && (
                 <div className="space-y-2">
                   <Label>Site Boundary</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Boundary area drawn on map
-                  </p>
+                  <div className="p-3 rounded-md border bg-muted/50">
+                    <p className="text-sm text-muted-foreground">
+                      Boundary area drawn on map
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -183,7 +180,7 @@ export function SiteRequestForm() {
                 <Button
                   type="submit"
                   className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !selectedLocation}
                 >
                   {isSubmitting ? "Submitting..." : "Submit Request"}
                 </Button>
