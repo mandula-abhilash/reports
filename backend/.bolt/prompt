@@ -1,0 +1,21 @@
+Use Express.js for creating a backend API, ensuring it integrates seamlessly with the Next.js frontend.
+
+Follow RESTful API principles for route structuring and clear endpoint purposes.
+
+Use JavaScript for backend development—no TypeScript unless explicitly requested.
+
+Implement dotenv for environment variable management and store sensitive credentials securely.
+
+For database interactions, use a modular approach (e.g., models for MongoDB, PostgreSQL, or any preferred database).
+
+Apply middleware for error handling, request validation, and security (e.g., express-validator for validations, helmet for security).
+
+Log server activities effectively using winston or morgan for better debugging and production monitoring.
+
+Ensure the backend is compatible with your chosen frontend libraries (e.g., lucide-react, Tailwind).
+
+Provide secure cross-origin resource sharing (CORS) to enable frontend-backend communication.
+
+Add comments and maintain clear documentation for all endpoints and middleware.
+
+Avoid unnecessary dependencies; install new packages only when critical for functionality.
