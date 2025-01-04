@@ -21,9 +21,8 @@
     "express-async-handler": "^1.2.0",
     "helmet": "^8.0.0",
     "mongoose": "^8.9.1",
-    "stripe": "^17.4.0",
-    "visdak-sesam": "github:mandula-abhilash/visdak-sesam",
-    "visdak-wallet": "github:mandula-abhilash/visdak-wallet"
+    "morgan": "^1.10.0",
+    "stripe": "^17.4.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

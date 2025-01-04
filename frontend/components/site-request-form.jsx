@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Coins } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -30,51 +31,47 @@ export function SiteRequestForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(siteRequestSchema),
+    mode: "onChange",
   });
 
-  const onSubmit = async (data) => {
-    try {
-      if (!selectedLocation || !selectedAddress) {
-        toast({
-          variant: "destructive",
-          title: "Location Required",
-          description: "Please select a site location using the map.",
-        });
-        return;
-      }
+  const formValues = watch();
 
-      const requestData = {
-        ...data,
-        siteName: data.siteName || selectedAddress,
-        siteLocation: selectedAddress,
-        coordinates: selectedLocation,
-        boundary: polygonPath,
-      };
+  const isFormValid = () => {
+    return (
+      isValid &&
+      selectedLocation &&
+      selectedAddress &&
+      Object.keys(errors).length === 0
+    );
+  };
 
-      console.log("Assessment Request Data:", requestData);
-
-      toast({
-        title: "Request Submitted",
-        description:
-          "Your site assessment request has been logged successfully.",
-      });
-
-      // setSelectedLocation(null);
-      // setSelectedAddress("");
-      // setPolygonPath([]);
-
-      router.push("/dashboard/requests");
-    } catch (error) {
-      console.error("Form submission error:", error);
+  const handleProceedToPayment = () => {
+    if (!isFormValid()) {
       toast({
         variant: "destructive",
-        title: "Submission Failed",
-        description: "Please try again later.",
+        title: "Missing Information",
+        description:
+          "Please fill in all required fields and select a location.",
       });
+      return;
     }
+
+    // Store form data in session storage
+    const formData = {
+      ...formValues,
+      siteName: formValues.siteName || selectedAddress,
+      siteLocation: selectedAddress,
+      coordinates: selectedLocation,
+      boundary: polygonPath,
+    };
+    sessionStorage.setItem("siteRequestData", JSON.stringify(formData));
+
+    // Redirect to pricing page
+    router.push("/pricing");
   };
 
   const handleLocationSelect = (location, address) => {
@@ -93,7 +90,7 @@ export function SiteRequestForm() {
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
         {/* Form Card - Takes 1 column on desktop */}
         <Card className="order-2 lg:order-1 p-6 bg-background/95 backdrop-blur-sm border-2">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">
@@ -178,11 +175,13 @@ export function SiteRequestForm() {
 
               <div className="pt-4">
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
-                  disabled={isSubmitting || !selectedLocation}
+                  onClick={handleProceedToPayment}
+                  disabled={!isFormValid()}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Request"}
+                  <Coins className="mr-2 h-4 w-4" />
+                  Pay to Submit Request
                 </Button>
               </div>
             </div>

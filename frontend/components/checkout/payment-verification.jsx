@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyPaymentSession } from "@/visdak-auth/src/api/stripe";
-import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -13,7 +12,6 @@ import { PaymentSuccess } from "./payment-success";
 export function PaymentVerification({ sessionId }) {
   const [verificationStatus, setVerificationStatus] = useState("verifying");
   const [plan, setPlan] = useState(null);
-  const { fetchTokens } = useAuth();
   const router = useRouter();
   const verificationAttempted = useRef(false);
 
@@ -34,7 +32,6 @@ export function PaymentVerification({ sessionId }) {
       try {
         const result = await verifyPaymentSession(sessionId);
         if (result.status === "complete" || result.paymentStatus === "paid") {
-          await fetchTokens();
           setVerificationStatus("success");
           setPlan(result.plan);
         } else {
@@ -47,7 +44,7 @@ export function PaymentVerification({ sessionId }) {
     };
 
     verifyPayment();
-  }, [sessionId, router, fetchTokens]);
+  }, [sessionId, router]);
 
   useEffect(() => {
     // Redirect to cancel page if verification fails

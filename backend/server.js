@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
@@ -6,8 +9,8 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 
-import visdakSesamModule from "visdak-sesam";
-import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
+import checkoutRoutes from "./routes/checkout.routes.js";
+import { handleStripeWebhook } from "./controllers/checkout.controller.js";
 
 const startServer = async () => {
   const app = express();
@@ -46,36 +49,12 @@ const startServer = async () => {
   app.set("trust proxy", 1);
 
   try {
-    // Initialize the visdak-sesam auth module
-    const { authRoutes, middleware } = visdakSesamModule();
-
-    // Mount the auth router
-    app.use("/api/auth", authRoutes);
-
-    const {
-      planRoutes,
-      walletRoutes,
-      subscriptionRoutes,
-      transactionRoutes,
-      checkoutRoutes,
-    } = visdakWalletRoutes(middleware);
-
     // Mount the visdak wallet routes
     app.use("/api/plans", planRoutes);
-    app.use("/api/wallet", walletRoutes);
-    app.use("/api/subscriptions", subscriptionRoutes);
-    app.use("/api/transactions", transactionRoutes);
+    // app.use("/api/wallet", walletRoutes);
+    // app.use("/api/subscriptions", subscriptionRoutes);
+    // app.use("/api/transactions", transactionRoutes);
     app.use("/api/checkout", checkoutRoutes);
-
-    // Example of a protected route
-    app.get("/api/protected", middleware.protect, (req, res) => {
-      res.json({ message: "This is a protected route.", user: req.user });
-    });
-
-    // Example of an admin-only route
-    app.get("/api/admin", middleware.protect, middleware.admin, (req, res) => {
-      res.json({ message: "This is an admin-only route.", user: req.user });
-    });
 
     // Catch-all for undefined routes
     app.use((req, res) => {
