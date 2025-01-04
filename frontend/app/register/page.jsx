@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { registerUser } from "@/visdak-auth/src/api/auth";
 import { useForm } from "react-hook-form";
 
-import { registerUser } from "@/lib/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

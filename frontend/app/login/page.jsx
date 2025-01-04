@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+// import { useAuth } from "@/contexts/auth-context";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { MainLayout } from "@/components/layout/main-layout";
+
+import { useAuth } from "../../visdak-auth/src/hooks/useAuth";
 
 const loginSchema = {
   email: "Please enter a valid email address",

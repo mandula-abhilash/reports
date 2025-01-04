@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "auth/useAuth";
 import { CirclePower, Coins, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

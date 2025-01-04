@@ -1,4 +1,4 @@
-import api from "../axiosInstance";
+import api from "../../visdak-auth/src/api/axiosInstance";
 
 export async function getActivePlans() {
   try {
