@@ -1,9 +1,9 @@
 import "./globals.css";
 
+import { AuthProvider } from "@/visdak-auth/src/components/AuthProvider";
+
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-
-import { AuthProvider } from "../contexts/auth-context";
 
 export const viewport = {
   width: "device-width",

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { verifyPaymentSession } from "@/lib/api/stripe";
 import { Card } from "@/components/ui/card";

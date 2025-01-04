@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 
-export function createAuthMiddleware(config) {
+/**
+ * Auth middleware for handling protected routes and authentication redirects
+ * @param {Object} config - Middleware configuration
+ * @param {string[]} config.protectedRoutes - Routes that require authentication
+ * @param {string[]} config.authRoutes - Authentication related routes (login/register)
+ * @param {string} config.loginPath - Path to redirect unauthenticated users
+ * @param {string} config.defaultProtectedPath - Path to redirect authenticated users from auth pages
+ */
+export function middleware(request, config) {
   const {
     protectedRoutes = [],
     authRoutes = ["/login", "/register"],
@@ -8,27 +16,38 @@ export function createAuthMiddleware(config) {
     defaultProtectedPath = "/dashboard",
   } = config;
 
-  return function middleware(request) {
-    const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
-    const sessionCookie = request.cookies.get("accessToken");
-    const isAuthenticated = !!sessionCookie;
+  // Get the token from the session cookie
+  const sessionCookie = request.cookies.get("accessToken");
+  const isAuthenticated = !!sessionCookie;
 
-    const isProtectedRoute = protectedRoutes.some((route) =>
-      pathname.startsWith(route)
-    );
+  // Check if the requested path is a protected route
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
-    const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  // Check if the requested path is an auth route
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-    if (isAuthenticated && isAuthRoute) {
-      return NextResponse.redirect(new URL(defaultProtectedPath, request.url));
-    }
+  // Redirect authenticated users away from auth pages
+  if (isAuthenticated && isAuthRoute) {
+    return NextResponse.redirect(new URL(defaultProtectedPath, request.url));
+  }
 
-    if (!isAuthenticated && isProtectedRoute) {
-      const redirectUrl = new URL(loginPath, request.url);
-      return NextResponse.redirect(redirectUrl);
-    }
+  // Redirect unauthenticated users to login from protected routes
+  if (!isAuthenticated && isProtectedRoute) {
+    const redirectUrl = new URL(loginPath, request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
 
-    return NextResponse.next();
-  };
+  return NextResponse.next();
+}
+
+/**
+ * Creates a configured middleware instance
+ * @param {Object} config - Middleware configuration
+ */
+export function createAuthMiddleware(config) {
+  return (request) => middleware(request, config);
 }

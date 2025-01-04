@@ -16,7 +16,6 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks",
-    "contexts": "@/contexts",
-    "auth": "../../visdak-auth/src/hooks"
+    "contexts": "@/contexts"
   }
 }

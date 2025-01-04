@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { Spinner } from "@/components/ui/spinner";
 import { SiteRequestForm } from "@/components/site-request-form";

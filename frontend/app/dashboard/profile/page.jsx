@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
