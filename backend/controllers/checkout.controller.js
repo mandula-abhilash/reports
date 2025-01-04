@@ -19,21 +19,32 @@ export const createCheckoutSession = async (req, res) => {
   try {
     const { planId, email, name, businessName } = req.body;
 
+    // Validate required fields
+    if (!planId || !email || !name || !businessName) {
+      return res.status(400).json({
+        error: "Missing required fields",
+      });
+    }
+
     // Find or create user based on email
     const user = await findOrCreateUser({ email, name, businessName });
 
     // Fetch the plan from the database
     const plan = await PlanModel.findById(planId);
     if (!plan || !plan.isActive) {
-      return res.status(404).json({ error: "Plan not found or inactive" });
+      return res.status(404).json({
+        error: "Plan not found or inactive",
+      });
     }
 
-    // Create a checkout session with current tokens
-    const session = await createStripeSession(plan, user._id);
+    // Create a checkout session
+    const session = await createStripeSession(plan, user);
     res.json({ sessionId: session.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({
+      error: "Failed to create checkout session",
+    });
   }
 };
 
@@ -43,40 +54,27 @@ export const createCheckoutSession = async (req, res) => {
 export const verifySession = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const { email } = req.query;
 
     // Validate the session
     const session = await getValidatedSession(sessionId);
 
     if (!session) {
-      return res.status(404).json({ error: "Session not found" });
-    }
-
-    // Get user by email
-    const user = await getUserByEmail(email);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.metadata.userId !== user._id.toString()) {
-      return res.status(403).json({ error: "Unauthorized" });
+      return res.status(404).json({
+        error: "Session not found",
+      });
     }
 
     // Return session status and details
     res.json({
       status: session.status,
       paymentStatus: session.payment_status,
-      metadata: {
-        type: session.metadata.type,
-        name: session.metadata.name,
-        tokens: session.metadata.tokens,
-        planId: session.metadata.planId,
-      },
+      metadata: session.metadata,
     });
   } catch (error) {
     console.error("Error verifying session:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({
+      error: "Failed to verify session",
+    });
   }
 };
 
@@ -108,7 +106,7 @@ export const handleStripeWebhook = async (req, res) => {
         const transaction = await createTransaction({
           userId,
           planId,
-          amount: session.amount_total / 100, // Convert cents to currency
+          amount: session.amount_total / 100,
           currency: session.currency.toUpperCase(),
           type,
         });

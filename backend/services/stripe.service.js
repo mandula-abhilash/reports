@@ -27,10 +27,22 @@ export const getValidatedSession = async (sessionId) => {
 /**
  * Creates a Stripe checkout session
  * @param {Object} plan - Plan details
- * @param {string} userId - User ID
+ * @param {Object} user - User details with _id
  * @returns {Promise<Object>} Created session
  */
-export const createStripeSession = async (plan, userId) => {
+export const createStripeSession = async (plan, user) => {
+  // Ensure all metadata values are strings
+  const metadata = {
+    userId: user._id.toString(),
+    planId: plan._id.toString(),
+    type: plan.type,
+    name: plan.name,
+    tokens: plan.tokens.toString(),
+    email: user.email,
+    userName: user.name,
+    businessName: user.businessName,
+  };
+
   return stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
@@ -49,12 +61,6 @@ export const createStripeSession = async (plan, userId) => {
     mode: plan.type === "subscription" ? "subscription" : "payment",
     success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.CLIENT_URL}/cancel`,
-    metadata: {
-      userId,
-      planId: plan._id.toString(),
-      type: plan.type,
-      name: plan.name,
-      tokens: plan.tokens.toString(),
-    },
+    metadata,
   });
 };

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import useSiteRequestStore from "@/store/site-request-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Coins } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -27,6 +28,7 @@ export function SiteRequestForm() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
+  const setFormData = useSiteRequestStore((state) => state.setFormData);
 
   const {
     register,
@@ -60,7 +62,7 @@ export function SiteRequestForm() {
       return;
     }
 
-    // Store form data in session storage
+    // Store form data in Zustand store
     const formData = {
       ...formValues,
       siteName: formValues.siteName || selectedAddress,
@@ -68,7 +70,7 @@ export function SiteRequestForm() {
       coordinates: selectedLocation,
       boundary: polygonPath,
     };
-    sessionStorage.setItem("siteRequestData", JSON.stringify(formData));
+    setFormData(formData);
 
     // Redirect to pricing page
     router.push("/pricing");

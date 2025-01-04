@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import useSiteRequestStore from "@/store/site-request-store";
 import { getActivePlans } from "@/visdak-auth/src/api/plans";
 import { createCheckoutSession } from "@/visdak-auth/src/api/stripe";
 import { loadStripe } from "@stripe/stripe-js";
@@ -52,6 +54,8 @@ export function PricingCards() {
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [loadingPlanId, setLoadingPlanId] = useState(null);
   const { toast } = useToast();
+  const router = useRouter();
+  const formData = useSiteRequestStore((state) => state.formData);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -70,11 +74,27 @@ export function PricingCards() {
     };
 
     fetchPlans();
-  }, [toast]);
+
+    // Redirect if no form data
+    if (!formData) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please fill in your details before selecting a plan.",
+      });
+      router.push("/");
+    }
+  }, [toast, router, formData]);
 
   const handlePurchase = async (plan) => {
     try {
       setLoadingPlanId(plan._id);
+
+      if (!formData) {
+        throw new Error(
+          "Please fill in your details before proceeding with the purchase"
+        );
+      }
 
       if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
         throw new Error("Stripe is not properly configured");
@@ -82,8 +102,9 @@ export function PricingCards() {
 
       const { sessionId } = await createCheckoutSession({
         planId: plan._id,
-        paymentGateway: "stripe",
-        quantity: 1,
+        email: formData.contactEmail,
+        name: formData.name,
+        businessName: formData.businessName,
       });
 
       const stripe = await stripePromise;
