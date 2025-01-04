@@ -5,6 +5,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
+import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import compression from "compression";
 import cookieParser from "cookie-parser";
@@ -12,6 +13,23 @@ import cookieParser from "cookie-parser";
 import checkoutRoutes from "./routes/checkout.routes.js";
 import { handleStripeWebhook } from "./controllers/checkout.controller.js";
 import planRoutes from "./routes/plan.routes.js";
+
+/**
+ * Connect to MongoDB
+ * @throws {Error} If MongoDB connection fails
+ */
+const connectToMongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("Connected to MongoDB successfully!");
+  } catch (error) {
+    console.error("MongoDB connection error:", error.message);
+    process.exit(1);
+  }
+};
+
+// Establish MongoDB connection on module load
+connectToMongoDB();
 
 const startServer = async () => {
   const app = express();

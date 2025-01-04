@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { PlanModel } from "../models/plan.model.js";
+import { findOrCreateUser } from "../services/user.service.js";
 import {
   getValidatedSession,
   createStripeSession,
@@ -16,7 +17,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
  */
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { planId } = req.body;
+    const { planId, email, name, businessName } = req.body;
+
+    // Find or create user based on email
+    const user = await findOrCreateUser({ email, name, businessName });
 
     // Fetch the plan from the database
     const plan = await PlanModel.findById(planId);
@@ -25,7 +29,7 @@ export const createCheckoutSession = async (req, res) => {
     }
 
     // Create a checkout session with current tokens
-    const session = await createStripeSession(plan, req.user.userId);
+    const session = await createStripeSession(plan, user._id);
     res.json({ sessionId: session.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -39,6 +43,7 @@ export const createCheckoutSession = async (req, res) => {
 export const verifySession = async (req, res) => {
   try {
     const { sessionId } = req.params;
+    const { email } = req.query;
 
     // Validate the session
     const session = await getValidatedSession(sessionId);
@@ -47,8 +52,14 @@ export const verifySession = async (req, res) => {
       return res.status(404).json({ error: "Session not found" });
     }
 
+    // Get user by email
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     // Check if the session belongs to the current user
-    if (session.metadata.userId !== req.user.userId) {
+    if (session.metadata.userId !== user._id.toString()) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
@@ -109,11 +120,6 @@ export const handleStripeWebhook = async (req, res) => {
             tokens: parseInt(tokens),
             transactionId: transaction._id,
           });
-          console.log("Wallet updated ");
-        } else if (type === "subscription") {
-          console.log("Handle subscription logic here.");
-        } else {
-          console.log("One-time payment does not involve wallet updates.");
         }
         break;
 
