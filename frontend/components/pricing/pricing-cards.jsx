@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getActivePlans } from "@/visdak-auth/src/api/plans";
+import { createCheckoutSession } from "@/visdak-auth/src/api/stripe";
 import { loadStripe } from "@stripe/stripe-js";
 import { Check, Coins, Loader2 } from "lucide-react";
 
-import { getActivePlans } from "@/lib/api/plans";
-import { createCheckoutSession } from "@/lib/api/stripe";
 import { Button } from "@/components/ui/button";
 import {
   Card,

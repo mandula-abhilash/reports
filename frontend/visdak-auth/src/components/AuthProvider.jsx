@@ -2,21 +2,46 @@
 
 import { createContext, useContext, useEffect } from "react";
 
+import { WelcomeBonusModal } from "@/components/welcome-bonus-modal";
+
 import { useAuth } from "../hooks/useAuth";
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children, config }) {
+export function AuthProvider({ children }) {
   const auth = useAuth();
+  const {
+    user,
+    checkSession,
+    fetchTokens,
+    showWelcomeModal,
+    setShowWelcomeModal,
+  } = auth;
 
   useEffect(() => {
-    if (config?.baseURL) {
-      authAxios.defaults.baseURL = config.baseURL;
-    }
-    auth.checkSession();
+    checkSession();
   }, []);
 
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  useEffect(() => {
+    if (user) {
+      fetchTokens();
+    }
+  }, [user]);
+
+  return (
+    <AuthContext.Provider value={auth}>
+      {children}
+      <WelcomeBonusModal
+        open={showWelcomeModal}
+        onOpenChange={(isOpen) => {
+          setShowWelcomeModal(isOpen);
+          if (!isOpen) {
+            fetchTokens();
+          }
+        }}
+      />
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuthContext() {

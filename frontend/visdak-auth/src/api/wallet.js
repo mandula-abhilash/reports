@@ -1,4 +1,4 @@
-import api from "../../visdak-auth/src/api/axiosInstance";
+import api from "./axiosInstance";
 
 export async function getWalletBalance() {
   const response = await api.get("/api/wallet");

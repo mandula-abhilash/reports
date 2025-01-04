@@ -1,4 +1,4 @@
-import api from "../../visdak-auth/src/api/axiosInstance";
+import api from "./axiosInstance";
 
 export async function createCheckoutSession(planData) {
   try {

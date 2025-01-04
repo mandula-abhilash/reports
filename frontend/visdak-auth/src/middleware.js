@@ -35,9 +35,15 @@ export function middleware(request, config) {
     return NextResponse.redirect(new URL(defaultProtectedPath, request.url));
   }
 
+  // Redirect authenticated users from root to dashboard
+  if (isAuthenticated && pathname === "/") {
+    return NextResponse.redirect(new URL(defaultProtectedPath, request.url));
+  }
+
   // Redirect unauthenticated users to login from protected routes
   if (!isAuthenticated && isProtectedRoute) {
     const redirectUrl = new URL(loginPath, request.url);
+    redirectUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
