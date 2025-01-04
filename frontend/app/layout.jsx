@@ -1,7 +1,5 @@
 import "./globals.css";
 
-import { AuthProvider } from "@/visdak-auth/src/components/AuthProvider";
-
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -102,10 +100,8 @@ export default function RootLayout({ children }) {
           enableSystem={false}
           disableTransitionOnChange
         >
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
