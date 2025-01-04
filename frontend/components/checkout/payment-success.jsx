@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Coins } from "lucide-react";
+import { CheckCircle2, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export function PaymentSuccess({ plan }) {
+export function PaymentSuccess({ plan, siteRequest }) {
   return (
     <div className="relative">
       <Card className="w-full max-w-md p-6">
@@ -14,28 +14,28 @@ export function PaymentSuccess({ plan }) {
           <CheckCircle2 className="h-16 w-16 text-green-500" />
           <h1 className="text-2xl font-bold">Payment Successful!</h1>
 
-          <div className="flex items-center gap-2 text-lg">
-            <Coins className="h-5 w-5 text-web-orange" />
-            <span>
-              <strong>{plan?.tokens || 0}</strong> tokens have been added to
-              your wallet
-            </span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <FileText className="h-5 w-5 text-web-orange" />
+              <p className="text-lg font-medium">
+                Report Generation Request Submitted
+              </p>
+            </div>
+            <p className="text-muted-foreground">
+              Your site assessment report will be generated and sent to{" "}
+              <span className="font-medium">{siteRequest?.contactEmail}</span>
+            </p>
           </div>
-
-          <p className="text-muted-foreground">
-            Thank you for your purchase. You can now use these tokens to
-            generate site assessment reports.
-          </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             <Link href="/pricing" className="w-full">
               <Button variant="outline" className="w-full">
-                Buy More
+                Request Another Report
               </Button>
             </Link>
-            <Link href="/dashboard" className="w-full">
+            <Link href="/" className="w-full">
               <Button className="w-full bg-web-orange hover:bg-web-orange/90 text-white">
-                Start Assessment
+                Back to Home
               </Button>
             </Link>
           </div>

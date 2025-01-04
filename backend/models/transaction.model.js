@@ -40,12 +40,16 @@ const transactionSchema = new mongoose.Schema(
       enum: ["pending", "completed", "failed"],
       default: "pending",
     },
-    metadata: { type: Object },
+    metadata: {
+      type: Object,
+      default: {},
+    },
   },
   { timestamps: true, collection: "vd_wallet_transactions" }
 );
 
 transactionSchema.index({ userId: 1, status: 1 });
+transactionSchema.index({ "metadata.stripeSessionId": 1 }, { sparse: true });
 
 export const TransactionModel = mongoose.model(
   "Transaction",

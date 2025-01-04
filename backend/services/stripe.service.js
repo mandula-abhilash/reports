@@ -41,6 +41,11 @@ export const createStripeSession = async (plan, user) => {
     email: user.email,
     userName: user.name,
     businessName: user.businessName,
+    siteRequest: JSON.stringify({
+      contactEmail: user.email,
+      name: user.name,
+      businessName: user.businessName,
+    }),
   };
 
   return stripe.checkout.sessions.create({
