@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 
 import checkoutRoutes from "./routes/checkout.routes.js";
 import { handleStripeWebhook } from "./controllers/checkout.controller.js";
+import planRoutes from "./routes/plan.routes.js";
 
 const startServer = async () => {
   const app = express();
