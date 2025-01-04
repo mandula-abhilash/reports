@@ -73,17 +73,13 @@ export function PricingCards() {
       }
     };
 
-    fetchPlans();
-
     // Redirect if no form data
     if (!formData) {
-      toast({
-        variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in your details before selecting a plan.",
-      });
-      router.push("/");
+      router.replace("/");
+      return;
     }
+
+    fetchPlans();
   }, [toast, router, formData]);
 
   const handlePurchase = async (plan) => {

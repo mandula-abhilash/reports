@@ -1,12 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useSiteRequestStore from "@/store/site-request-store";
 import { CheckCircle2, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 export function PaymentSuccess({ plan, siteRequest }) {
+  const router = useRouter();
+  const clearFormData = useSiteRequestStore((state) => state.clearFormData);
+
+  useEffect(() => {
+    // Clear the form data after successful payment
+    clearFormData();
+  }, [clearFormData]);
+
   return (
     <div className="relative">
       <Card className="w-full max-w-md p-6">
@@ -28,11 +39,6 @@ export function PaymentSuccess({ plan, siteRequest }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full">
-            <Link href="/pricing" className="w-full">
-              <Button variant="outline" className="w-full">
-                Request Another Report
-              </Button>
-            </Link>
             <Link href="/" className="w-full">
               <Button className="w-full bg-web-orange hover:bg-web-orange/90 text-white">
                 Back to Home
