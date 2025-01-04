@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyPaymentSession } from "@/visdak-auth/src/api/stripe";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
@@ -15,6 +15,7 @@ export function PaymentVerification({ sessionId }) {
   const [plan, setPlan] = useState(null);
   const { fetchTokens } = useAuth();
   const router = useRouter();
+  const verificationAttempted = useRef(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -22,6 +23,13 @@ export function PaymentVerification({ sessionId }) {
         router.replace("/dashboard");
         return;
       }
+
+      // Prevent multiple verification attempts
+      if (verificationAttempted.current) {
+        return;
+      }
+
+      verificationAttempted.current = true;
 
       try {
         const result = await verifyPaymentSession(sessionId);
@@ -41,6 +49,17 @@ export function PaymentVerification({ sessionId }) {
     verifyPayment();
   }, [sessionId, router, fetchTokens]);
 
+  useEffect(() => {
+    // Redirect to cancel page if verification fails
+    if (verificationStatus === "failed") {
+      const timeoutId = setTimeout(() => {
+        router.replace("/cancel");
+      }, 2000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [verificationStatus, router]);
+
   if (verificationStatus === "verifying") {
     return (
       <Card className="w-full max-w-md p-6">
@@ -53,8 +72,16 @@ export function PaymentVerification({ sessionId }) {
   }
 
   if (verificationStatus === "failed") {
-    router.replace("/cancel");
-    return null;
+    return (
+      <Card className="w-full max-w-md p-6">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <Spinner size="lg" className="text-web-orange" />
+          <p className="text-muted-foreground">
+            Payment verification failed. Redirecting...
+          </p>
+        </div>
+      </Card>
+    );
   }
 
   return <PaymentSuccess plan={plan} />;
