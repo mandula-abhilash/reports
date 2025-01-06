@@ -96,6 +96,8 @@ export function PricingCards() {
         throw new Error("Stripe is not properly configured");
       }
 
+      console.log(JSON.stringify(formData, null, 2));
+
       const { sessionId } = await createCheckoutSession({
         planId: plan._id,
         email: formData.contactEmail,

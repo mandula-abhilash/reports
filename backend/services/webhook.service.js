@@ -20,7 +20,7 @@ export const handleStripeEvent = async (event) => {
  */
 const handleCheckoutSuccess = async (session) => {
   try {
-    const { userId, planId, type, tokens, name, email, businessName } =
+    const { userId, planId, type, tokens, userName, email, businessName } =
       session.metadata;
 
     // Create transaction with session ID in metadata
@@ -47,7 +47,7 @@ const handleCheckoutSuccess = async (session) => {
       // Send notifications
       await sendCheckoutNotifications({
         session,
-        userName: name,
+        userName: userName,
         email,
         businessName,
       });
