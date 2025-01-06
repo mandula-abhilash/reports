@@ -62,7 +62,6 @@ export function SiteRequestForm() {
       return;
     }
 
-    // Store form data in Zustand store
     const formData = {
       ...formValues,
       siteName: formValues.siteName || selectedAddress,
@@ -71,8 +70,6 @@ export function SiteRequestForm() {
       boundary: polygonPath,
     };
     setFormData(formData);
-
-    // Redirect to pricing page
     router.push("/pricing");
   };
 
@@ -86,11 +83,23 @@ export function SiteRequestForm() {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">New Site Assessment Request</h2>
+    <div className="space-y-8">
+      {/* Title Section */}
+      <div className="text-center max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            Site Assessment Request
+          </h1>
+        </div>
+        <p className="text-muted-foreground mt-2">
+          Complete your details, mark your site location, and proceed with
+          payment. We will assess the site, generate a report, and email it to
+          you.
+        </p>
+      </div>
 
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
-        {/* Form Card - Takes 1 column on desktop */}
+        {/* Form Card */}
         <Card className="order-2 lg:order-1 p-6 bg-background/95 backdrop-blur-sm border-2">
           <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
             <div className="space-y-4">
@@ -190,8 +199,8 @@ export function SiteRequestForm() {
           </form>
         </Card>
 
-        {/* Map - Takes 2 columns on desktop */}
-        <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-10rem)]">
+        {/* Map */}
+        <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-12rem)]">
           <SiteMap
             onLocationSelect={handleLocationSelect}
             onPolygonComplete={handlePolygonComplete}
