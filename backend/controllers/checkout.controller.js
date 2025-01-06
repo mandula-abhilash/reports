@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { PlanModel } from "../models/plan.model.js";
+import { TransactionModel } from "../models/transaction.model.js";
 import { findOrCreateUser } from "../services/user.service.js";
 import {
   getValidatedSession,

@@ -12,13 +12,14 @@ import { PaymentSuccess } from "./payment-success";
 export function PaymentVerification({ sessionId }) {
   const [verificationStatus, setVerificationStatus] = useState("verifying");
   const [plan, setPlan] = useState(null);
+  const [siteRequest, setSiteRequest] = useState(null);
   const router = useRouter();
   const verificationAttempted = useRef(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
       if (!sessionId) {
-        router.replace("/dashboard");
+        router.replace("/");
         return;
       }
 
@@ -34,6 +35,7 @@ export function PaymentVerification({ sessionId }) {
         if (result.status === "complete" || result.paymentStatus === "paid") {
           setVerificationStatus("success");
           setPlan(result.plan);
+          setSiteRequest(result.siteRequest);
         } else {
           setVerificationStatus("failed");
         }
@@ -81,5 +83,5 @@ export function PaymentVerification({ sessionId }) {
     );
   }
 
-  return <PaymentSuccess plan={plan} />;
+  return <PaymentSuccess plan={plan} siteRequest={siteRequest} />;
 }
