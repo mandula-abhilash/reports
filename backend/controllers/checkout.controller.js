@@ -14,7 +14,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
  */
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { planId, email, name, businessName } = req.body;
+    const { planId, email, name, businessName, siteRequest } = req.body;
 
     if (!planId || !email || !name || !businessName) {
       return res.status(400).json({
@@ -31,7 +31,7 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
-    const session = await createStripeSession(plan, user);
+    const session = await createStripeSession(plan, user, siteRequest);
     res.json({ sessionId: session.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);

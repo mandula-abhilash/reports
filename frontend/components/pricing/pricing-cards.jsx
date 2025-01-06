@@ -101,6 +101,11 @@ export function PricingCards() {
         email: formData.contactEmail,
         name: formData.name,
         businessName: formData.businessName,
+        siteRequest: {
+          siteName: formData.siteName,
+          siteLocation: formData.siteLocation,
+          coordinates: formData.coordinates,
+        },
       });
 
       const stripe = await stripePromise;

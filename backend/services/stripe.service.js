@@ -7,8 +7,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 /**
  * Retrieves and validates a Stripe session
- * @param {string} sessionId - Stripe session ID
- * @returns {Promise<Object>} Validated session
  */
 export const getValidatedSession = async (sessionId) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -26,11 +24,17 @@ export const getValidatedSession = async (sessionId) => {
 
 /**
  * Creates a Stripe checkout session
- * @param {Object} plan - Plan details
- * @param {Object} user - User details with _id
- * @returns {Promise<Object>} Created session
  */
-export const createStripeSession = async (plan, user) => {
+export const createStripeSession = async (plan, user, siteRequest) => {
+  // Format site request data for metadata
+  const formattedSiteRequest = {
+    siteName: siteRequest.siteName || siteRequest.siteLocation,
+    siteLocation: siteRequest.siteLocation,
+    coordinates: siteRequest.coordinates
+      ? `${siteRequest.coordinates.lat},${siteRequest.coordinates.lng}`
+      : null,
+  };
+
   // Ensure all metadata values are strings
   const metadata = {
     userId: user._id.toString(),
@@ -41,11 +45,7 @@ export const createStripeSession = async (plan, user) => {
     email: user.email,
     userName: user.name,
     businessName: user.businessName,
-    siteRequest: JSON.stringify({
-      contactEmail: user.email,
-      name: user.name,
-      businessName: user.businessName,
-    }),
+    siteRequest: JSON.stringify(formattedSiteRequest),
   };
 
   return stripe.checkout.sessions.create({
