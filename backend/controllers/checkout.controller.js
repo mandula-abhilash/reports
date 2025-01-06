@@ -5,10 +5,7 @@ import {
   getValidatedSession,
   createStripeSession,
 } from "../services/stripe.service.js";
-import {
-  createTransaction,
-  updateWalletBalance,
-} from "../services/payment.service.js";
+import { handleStripeEvent } from "../services/webhook.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -58,7 +55,6 @@ export const verifySession = async (req, res) => {
       });
     }
 
-    // Return session status and details
     res.json({
       status: session.status,
       paymentStatus: session.payment_status,
@@ -94,32 +90,7 @@ export const handleStripeWebhook = async (req, res) => {
   }
 
   try {
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const { userId, planId, type, tokens } = session.metadata;
-
-      // Create transaction with session ID in metadata
-      const transaction = await createTransaction({
-        userId,
-        planId,
-        amount: session.amount_total / 100,
-        currency: session.currency.toUpperCase(),
-        type,
-        metadata: {
-          stripeSessionId: session.id,
-        },
-      });
-
-      // Only update wallet if transaction was created
-      if (transaction) {
-        await updateWalletBalance({
-          userId,
-          tokens: parseInt(tokens),
-          transactionId: transaction._id,
-        });
-      }
-    }
-
+    await handleStripeEvent(event);
     res.json({ received: true });
   } catch (error) {
     console.error("Error handling webhook event:", error);

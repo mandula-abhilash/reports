@@ -1,13 +1,27 @@
 import { createTransaction, updateWalletBalance } from "./payment.service.js";
+import { sendCheckoutNotifications } from "./email/notification.service.js";
 
 /**
- * Handles successful checkout session
- * @param {Object} session - Stripe session object
- * @returns {Promise<void>}
+ * Handle different types of Stripe events
  */
-export const handleCheckoutSuccess = async (session) => {
+export const handleStripeEvent = async (event) => {
+  switch (event.type) {
+    case "checkout.session.completed":
+      await handleCheckoutSuccess(event.data.object);
+      break;
+    // Add other event types as needed
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
+  }
+};
+
+/**
+ * Handle successful checkout completion
+ */
+const handleCheckoutSuccess = async (session) => {
   try {
-    const { userId, planId, type, tokens } = session.metadata;
+    const { userId, planId, type, tokens, name, email, businessName } =
+      session.metadata;
 
     // Create transaction with session ID in metadata
     const transaction = await createTransaction({
@@ -21,12 +35,21 @@ export const handleCheckoutSuccess = async (session) => {
       },
     });
 
-    // Only update wallet if transaction was created successfully
+    // Only proceed if transaction was created successfully
     if (transaction) {
+      // Update wallet balance
       await updateWalletBalance({
         userId,
         tokens: parseInt(tokens),
         transactionId: transaction._id,
+      });
+
+      // Send notifications
+      await sendCheckoutNotifications({
+        session,
+        userName: name,
+        email,
+        businessName,
       });
     }
   } catch (error) {
