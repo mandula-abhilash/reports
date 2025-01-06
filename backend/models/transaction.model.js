@@ -51,9 +51,14 @@ const transactionSchema = new mongoose.Schema(
 // Add compound index for userId and status
 transactionSchema.index({ userId: 1, status: 1 });
 
-// Add unique index for stripeSessionId to prevent duplicates
+// Add unique indexes for Stripe identifiers to prevent duplicates
 transactionSchema.index(
   { "metadata.stripeSessionId": 1 },
+  { unique: true, sparse: true }
+);
+
+transactionSchema.index(
+  { "metadata.stripeEventId": 1 },
   { unique: true, sparse: true }
 );
 

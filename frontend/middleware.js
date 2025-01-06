@@ -5,12 +5,15 @@ export function middleware(request) {
   if (request.nextUrl.pathname === "/pricing") {
     // Get the referer
     const referer = request.headers.get("referer");
+    const hasFormData = request.cookies.get("site_request_data");
 
-    // Check if user is coming from the home page
-    if (!referer || !referer.includes(request.nextUrl.origin)) {
-      // Redirect to home if accessed directly
-      return NextResponse.redirect(new URL("/", request.url));
+    // Allow access if coming from home page or has form data
+    if (referer?.includes(request.nextUrl.origin) || hasFormData) {
+      return NextResponse.next();
     }
+
+    // Redirect to home if accessed directly without form data
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return NextResponse.next();
