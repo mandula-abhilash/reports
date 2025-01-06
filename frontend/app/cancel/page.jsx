@@ -24,9 +24,9 @@ export default function CancelPage() {
                   Try Again
                 </Button>
               </Link>
-              <Link href="/dashboard" className="w-full">
+              <Link href="/" className="w-full">
                 <Button className="w-full bg-web-orange hover:bg-web-orange/90 text-white">
-                  Back to Dashboard
+                  Back to Home
                 </Button>
               </Link>
             </div>

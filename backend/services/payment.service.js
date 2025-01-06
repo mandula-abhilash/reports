@@ -12,25 +12,43 @@ export const createTransaction = async ({
   amount,
   currency,
   type,
+  metadata,
 }) => {
-  const transaction = new TransactionModel({
-    userId,
-    planId,
-    amount,
-    currency: currency.toUpperCase(),
-    type,
-    flow: "credit",
-    paymentGateway: "stripe",
-    status: "completed",
-  });
+  try {
+    // Check for existing transaction with same session ID
+    if (metadata?.stripeSessionId) {
+      const existing = await TransactionModel.findOne({
+        "metadata.stripeSessionId": metadata.stripeSessionId,
+      });
+      if (existing) {
+        console.log(
+          `Transaction already exists for session: ${metadata.stripeSessionId}`
+        );
+        return null;
+      }
+    }
 
-  return await transaction.save();
+    const transaction = new TransactionModel({
+      userId,
+      planId,
+      amount,
+      currency: currency.toUpperCase(),
+      type,
+      flow: "credit",
+      paymentGateway: "stripe",
+      status: "completed",
+      metadata,
+    });
+
+    return await transaction.save();
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    throw error;
+  }
 };
 
 /**
  * Updates wallet balance after successful payment
- * @param {Object} params - Update parameters
- * @returns {Promise<Object>} Updated wallet
  */
 export const updateWalletBalance = async ({
   userId,

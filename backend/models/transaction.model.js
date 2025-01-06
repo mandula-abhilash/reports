@@ -48,8 +48,14 @@ const transactionSchema = new mongoose.Schema(
   { timestamps: true, collection: "vd_wallet_transactions" }
 );
 
+// Add compound index for userId and status
 transactionSchema.index({ userId: 1, status: 1 });
-transactionSchema.index({ "metadata.stripeSessionId": 1 }, { sparse: true });
+
+// Add unique index for stripeSessionId to prevent duplicates
+transactionSchema.index(
+  { "metadata.stripeSessionId": 1 },
+  { unique: true, sparse: true }
+);
 
 export const TransactionModel = mongoose.model(
   "Transaction",

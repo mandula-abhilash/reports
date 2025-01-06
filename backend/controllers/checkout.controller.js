@@ -1,6 +1,5 @@
 import Stripe from "stripe";
 import { PlanModel } from "../models/plan.model.js";
-import { TransactionModel } from "../models/transaction.model.js";
 import { findOrCreateUser } from "../services/user.service.js";
 import {
   getValidatedSession,
@@ -97,39 +96,27 @@ export const handleStripeWebhook = async (req, res) => {
   try {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
+      const { userId, planId, type, tokens } = session.metadata;
 
-      // Check if transaction already exists for this session
-      const existingTransaction = await TransactionModel.findOne({
-        "metadata.stripeSessionId": session.id,
+      // Create transaction with session ID in metadata
+      const transaction = await createTransaction({
+        userId,
+        planId,
+        amount: session.amount_total / 100,
+        currency: session.currency.toUpperCase(),
+        type,
+        metadata: {
+          stripeSessionId: session.id,
+        },
       });
 
-      if (!existingTransaction) {
-        const { userId, planId, type, tokens } = session.metadata;
-
-        // Create transaction record
-        const transaction = await createTransaction({
+      // Only update wallet if transaction was created
+      if (transaction) {
+        await updateWalletBalance({
           userId,
-          planId,
-          amount: session.amount_total / 100,
-          currency: session.currency.toUpperCase(),
-          type,
-          metadata: {
-            stripeSessionId: session.id,
-          },
+          tokens: parseInt(tokens),
+          transactionId: transaction._id,
         });
-
-        // Update wallet balance only if transaction was created
-        if (transaction) {
-          await updateWalletBalance({
-            userId,
-            tokens: parseInt(tokens),
-            transactionId: transaction._id,
-          });
-        }
-      } else {
-        console.log(
-          `Duplicate webhook event ignored for session: ${session.id}`
-        );
       }
     }
 
