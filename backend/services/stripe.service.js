@@ -22,6 +22,17 @@ export const getValidatedSession = async (sessionId) => {
   return session;
 };
 
+const getProductDescription = (name) => {
+  switch (name) {
+    case "Full Report":
+      return "Expert-reviewed site risk reports for quick, shareable insights.";
+    case "Topography Report":
+      return "Topographical reports giving you accurate height data quickly.";
+    default:
+      return "";
+  }
+};
+
 /**
  * Creates a Stripe checkout session
  */
@@ -35,13 +46,16 @@ export const createStripeSession = async (plan, user, siteRequest) => {
       : null,
   };
 
+  // Get product description
+  const description = getProductDescription(plan.name);
+
   // Ensure all metadata values are strings
   const metadata = {
     userId: user._id.toString(),
     planId: plan._id.toString(),
     type: plan.type,
     name: plan.name,
-    tokens: plan.tokens.toString(),
+    tokens: plan.tokens?.toString() || "0",
     email: user.email,
     userName: user.name,
     businessName: user.businessName,
@@ -56,7 +70,7 @@ export const createStripeSession = async (plan, user, siteRequest) => {
           currency: plan.currency.toLowerCase(),
           product_data: {
             name: plan.name,
-            description: `Plan Type: ${plan.type}`,
+            description: description,
           },
           unit_amount: plan.price * 100, // Stripe expects amount in cents
         },
@@ -67,5 +81,10 @@ export const createStripeSession = async (plan, user, siteRequest) => {
     success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.CLIENT_URL}/cancel`,
     metadata,
+    custom_text: {
+      submit: {
+        message: "We'll email your report once the payment is processed.",
+      },
+    },
   });
 };
