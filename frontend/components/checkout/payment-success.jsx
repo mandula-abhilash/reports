@@ -1,23 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import useSiteRequestStore from "@/store/site-request-store";
 import { CheckCircle2, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export function PaymentSuccess({ plan, siteRequest }) {
-  const router = useRouter();
-  const clearFormData = useSiteRequestStore((state) => state.clearFormData);
-
-  useEffect(() => {
-    // Clear the form data after successful payment
-    clearFormData();
-  }, [clearFormData]);
-
+export function PaymentSuccess() {
   return (
     <div className="relative">
       <Card className="w-full max-w-md p-6">
@@ -33,8 +22,8 @@ export function PaymentSuccess({ plan, siteRequest }) {
               </p>
             </div>
             <p className="text-muted-foreground">
-              Your site assessment report will be generated and sent to{" "}
-              <span className="font-medium">{siteRequest?.contactEmail}</span>
+              Your site assessment report will be generated and sent to your
+              email.
             </p>
           </div>
 
