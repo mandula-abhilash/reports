@@ -71,13 +71,14 @@ const getProductDescription = (name) => {
   }
 };
 
-export function PricingCards() {
+export function PricingCards({ isHomePage = false }) {
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [loadingPlanId, setLoadingPlanId] = useState(null);
   const { toast } = useToast();
   const router = useRouter();
   const formData = useSiteRequestStore((state) => state.formData);
+  const setSelectedPlan = useSiteRequestStore((state) => state.setSelectedPlan);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -95,18 +96,19 @@ export function PricingCards() {
       }
     };
 
-    // Redirect if no form data
-    if (!formData) {
-      router.replace("/");
-      return;
-    }
-
     fetchPlans();
-  }, [toast, router, formData]);
+  }, [toast]);
 
   const handlePurchase = async (plan) => {
     try {
       setLoadingPlanId(plan._id);
+
+      if (isHomePage) {
+        // Store the selected plan and navigate to the form page
+        setSelectedPlan(plan);
+        router.push("/site-request");
+        return;
+      }
 
       if (!formData) {
         throw new Error(
