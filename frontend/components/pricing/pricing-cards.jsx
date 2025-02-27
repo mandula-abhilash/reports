@@ -177,7 +177,7 @@ export function PricingCards({ isHomePage = false }) {
         const features = getProductFeatures(plan.name);
 
         return (
-          <Card key={plan._id} className="flex flex-col">
+          <Card key={plan._id} className="flex flex-col shadow-md">
             <CardHeader>
               <div className="flex items-center gap-2 mb-2">
                 <div className="p-2 rounded-lg bg-web-orange/10">
