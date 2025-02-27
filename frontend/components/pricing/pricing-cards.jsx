@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSiteRequestStore from "@/store/site-request-store";
 import { getActivePlans } from "@/visdak-auth/src/api/plans";
-import { createCheckoutSession } from "@/visdak-auth/src/api/stripe";
-import { loadStripe } from "@stripe/stripe-js";
 import { FileText, Loader2, Mountain } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,10 +17,6 @@ import {
 } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/components/ui/use-toast";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
 
 const getProductFeatures = (name) => {
   switch (name) {
@@ -71,13 +65,12 @@ const getProductDescription = (name) => {
   }
 };
 
-export function PricingCards({ isHomePage = false }) {
+export function PricingCards() {
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [loadingPlanId, setLoadingPlanId] = useState(null);
   const { toast } = useToast();
   const router = useRouter();
-  const formData = useSiteRequestStore((state) => state.formData);
   const setSelectedPlan = useSiteRequestStore((state) => state.setSelectedPlan);
 
   useEffect(() => {
@@ -102,44 +95,8 @@ export function PricingCards({ isHomePage = false }) {
   const handlePurchase = async (plan) => {
     try {
       setLoadingPlanId(plan._id);
-
-      if (isHomePage) {
-        // Store the selected plan and navigate to the form page
-        setSelectedPlan(plan);
-        router.push("/site-request");
-        return;
-      }
-
-      if (!formData) {
-        throw new Error(
-          "Please fill in your details before proceeding with the purchase"
-        );
-      }
-
-      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-        throw new Error("Stripe is not properly configured");
-      }
-
-      const { sessionId } = await createCheckoutSession({
-        planId: plan._id,
-        email: formData.contactEmail,
-        name: formData.name,
-        businessName: formData.businessName,
-        siteRequest: {
-          siteName: formData.siteName,
-          siteLocation: formData.siteLocation,
-          coordinates: formData.coordinates,
-        },
-      });
-
-      const stripe = await stripePromise;
-
-      if (!stripe) {
-        throw new Error("Failed to load Stripe");
-      }
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      if (error) throw error;
+      setSelectedPlan(plan);
+      router.push("/site-request");
     } catch (error) {
       console.error("Purchase error:", error);
       toast({

@@ -157,16 +157,17 @@ export function SiteRequestForm() {
       {/* Form Card */}
       <Card className="order-2 lg:order-1 p-6 bg-background/95 backdrop-blur-sm border-2">
         {selectedPlan && (
-          <div className="mb-6 p-4 bg-muted/30 rounded-lg border">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 rounded-lg bg-web-orange/10">
-                <PlanIcon className="h-5 w-5 text-web-orange" />
+          <div className="mb-6 p-4 bg-muted/30 rounded-lg border shadow-md">
+            <div className="flex justify-between items-center gap-2 mb-2">
+              <div className="flex items-center">
+                <div className="p-2 rounded-lg bg-web-orange/10">
+                  <PlanIcon className="h-5 w-5 text-web-orange" />
+                </div>
+                <h2 className="text-lg font-semibold ml-2">
+                  {selectedPlan.name}
+                </h2>
               </div>
-              <h2 className="text-lg font-semibold">{selectedPlan.name}</h2>
-            </div>
-            <div className="flex items-baseline space-x-2 mt-1">
               <span className="text-xl font-bold">£{selectedPlan.price}</span>
-              <span className="text-muted-foreground text-sm">one-time</span>
             </div>
           </div>
         )}
@@ -279,7 +280,7 @@ export function SiteRequestForm() {
       </Card>
 
       {/* Map */}
-      <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-12rem)]">
+      <div className="order-1 lg:order-2 lg:col-span-2 h-[600px] lg:h-[calc(100vh-6rem)]">
         <SiteMap
           onLocationSelect={handleLocationSelect}
           onPolygonComplete={handlePolygonComplete}
