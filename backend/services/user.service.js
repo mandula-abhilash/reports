@@ -12,6 +12,11 @@ export const findOrCreateUser = async ({ email, name, businessName }) => {
         name,
         businessName,
       });
+    } else {
+      if (businessName && user.businessName !== businessName) {
+        user.businessName = businessName;
+        await user.save();
+      }
     }
 
     return user;
