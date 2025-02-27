@@ -14,9 +14,9 @@ export function PricingContent({ isHomePage = false }) {
       <section className="max-w-6xl mx-auto">
         {isHomePage && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <Card className="p-6 lg:col-span-1">
-              <div className="space-y-4">
-                <h1 className="text-2xl font-bold tracking-tighter">
+            <div className="lg:col-span-1">
+              <div className="text-left space-y-4 mb-6">
+                <h1 className="text-4xl font-bold tracking-tighter">
                   Site Assessment Request
                 </h1>
                 <p className="text-muted-foreground">
@@ -24,7 +24,9 @@ export function PricingContent({ isHomePage = false }) {
                   with payment. We will assess the site, generate a report, and
                   email it to you.
                 </p>
-                <ul className="space-y-2 mt-4">
+              </div>
+              <Card className="p-6 bg-muted/30 border">
+                <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <div className="rounded-full p-1 bg-green-500/10 mt-0.5">
                       <svg
@@ -106,14 +108,14 @@ export function PricingContent({ isHomePage = false }) {
                     </span>
                   </li>
                 </ul>
-              </div>
-            </Card>
+              </Card>
+            </div>
             <div className="lg:col-span-2">
-              <div className="text-center space-y-4 mb-8">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+              <div className="space-y-4 mb-8">
+                <h1 className="text-2xl font-bold tracking-tighter sm:text-4xl">
                   Choose Your Report Type
                 </h1>
-                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                <p className="text-muted-foreground text-md mx-auto">
                   Select the type of report that best suits your needs. Each
                   report provides detailed insights for informed
                   decision-making.
@@ -122,21 +124,6 @@ export function PricingContent({ isHomePage = false }) {
               <PricingCards isHomePage={true} />
             </div>
           </div>
-        )}
-
-        {!isHomePage && (
-          <>
-            <div className="text-center space-y-4 mb-12">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
-                Choose Your Report Type
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Select the type of report that best suits your needs. Each
-                report provides detailed insights for informed decision-making.
-              </p>
-            </div>
-            <PricingCards />
-          </>
         )}
       </section>
     </div>
